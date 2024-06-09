@@ -1,0 +1,24 @@
+# vscode 
+.vscode
+
+# Latex build files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+*.pdf
+
+# bib tex 
+*-blx.bib
+*.bbl
+*.blg
+*.lof
+*.lot
+*.out
+*.run.xml
+*.toc
+
+# pandoc generated files
+*.docx
+*.doc
