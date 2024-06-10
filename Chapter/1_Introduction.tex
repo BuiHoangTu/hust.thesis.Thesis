@@ -1,21 +1,9 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
 
-% Lưu ý: Mẫu ĐATN này được thiết kế phù hợp với đồ án tốt nghiệp theo hướng nghiên cứu. Mẫu đề tài này là gợi ý tham khảo. Tuỳ từng đề tài, cấu trúc có thể thay đổi ít nhiều. Sinh viên cần tham khảo ý kiến của giáo viên hướng dẫn để đưa ra cấu trúc hợp lý nhất cho đề tài của mình. 
-
-% Trước khi viết ĐATN, sinh viên cần đọc kỹ hướng dẫn và quy định chi tiết về cách viết ĐATN trong Phụ lục A. 
-
-% Khi đóng quyển ĐATN, sinh viên cần lưu ý tuân thủ hướng dẫn ở phụ lục A.9
-
-% SV cần đặc biệt lưu ý cách hành văn. Mỗi đoạn văn không được quá dài và cần có ý tứ rõ ràng, bao gồm duy nhất một ý chính và các ý phân tích bổ trợ để làm rõ hơn ý chính. Các câu văn trong đoạn phải đầy đủ chủ ngữ vị ngữ, cùng hướng đến chủ đề chung. Câu sau phải liên kết với câu trước, đoạn sau liên kết với đoạn trước. Trong văn phong khoa học, sinh viên không được dùng từ trong văn nói, không dùng các từ phóng đại, thái quá, các từ thiếu khách quan, thiên về cảm xúc, về quan điểm cá nhân như “tuyệt vời”, “cực hay”, “cực kỳ hữu ích”, v.v. Các câu văn cần được tối ưu hóa, đảm bảo rất khó để thể thêm hoặc bớt đi được dù chỉ một từ. Cách diễn đạt cần ngắn gọn, súc tích, không dài dòng.
-
-% Chương 1 có độ dài từ 3 đến 6 trang với các nội dung sau đây
 
 \section{Problem Statement}
 \label{sec:dvd}
-% Phần này sinh viên mô tả bài toán cần giải quyết, lý do tại sao lại chọn bài toán đó, ý nghĩa/tầm quan trọng của bài toán.
-
-% Tiêu đề của chương này có thể để là ``đặt vấn đề'', hoặc lấy chính tên của bài toán mà sinh viên định giải quyết, ví dụ có thể đặt tiêu đề là ``Bài toán dự đoán …” 
 
 Diabetic Ketoacidosis is a metabolic complication of Diabetes Mellitus, caused by insulin deficiency and increased counterregulatory hormones.
 This results in the body not converting enough sugar into energy and requiring to metabolize triglycerides.
@@ -36,9 +24,10 @@ In addition, due to damage to the kidneys caused by AKI, patients face a greater
 
 Therefore, predicting AKI in advance is an urgent issue in improving patient care, allowing doctors to intervene promptly to stop disease progression.
 
+
+
 \section{Background and Problems of Research} 
 \label{sec:giaiphap}
-% Sinh viên trước tiên cần trình bày tổng quan các kết quả của các nghiên cứu hiện nay cho bài toán giới thiệu ở phần \ref{sec:dvd}. Sau đấy, sinh viên đưa ra các hạn chế của các giải pháp hiện tại. 
 
 Several studies have made significant advances in predicting AKI in DKA-ICU patients using mainly tabular-based machine learning models.
 These studies shed light on a new direction for predicting the risk of developing Acute Kidney Injury for DKA-ICU patients alone rather than for all ICU-admitted patients.
@@ -57,8 +46,9 @@ Finally, the method for assessing AKI in patients is not yet complete and update
 
 Overall, although there have been noticable advances in predicting AKI in DKA-ICU patients, there are still many limitations that need to be overcome so that the model become stable, reliable, and suitable to more general usecase.
 
+
+
 \section{Research Objectives and Conceptual Framework}
-% Trong chương này, sinh viên trước hết trình bày mục tiêu của đồ án là gì, sau đấy sinh viên đề xuất định hướng giải pháp của mình. Tốt nhất là với trình bày từng giải pháp đối với mỗi vấn đề nêu ra trong chương \ref{sec:giaiphap}. 
 
 The main goals of this thesis is to find out the most suitable model to predict AKI in DKA-ICU patients based on clinical and biological data from MIMIC-IV database.
 
@@ -74,9 +64,8 @@ Finally, I evaluate and compare the predictive ability of different models in pr
 The models compared include XGBoost (Best Model in Previous Studies), new deep learning models with tabular data, and deep learning models with time series data.
 
 \section{Contributions}
-% Trong phần này sinh viên liệt kê cụ thể, ngắn gọn các đóng góp của đồ án. Ví dụ: 
 
-This thesis' contributions can be summerize into 4 main points.
+This thesis' contributions can be summarize into 4 main points.
 
 Firstly, it proposes the removal of certain data-leaking indices and the addition of commonly measured metrics in DKA-ICU patients to predict AKI. 
 By identifying and eliminating indices that contribute to data leakage, the accuracy and reliability of the predictions are enhanced. 
@@ -95,43 +84,36 @@ This innovative approach leverages the power of deep learning to analyze pattern
 \section{Organization of Thesis}
 The rest of the thesis report is organized into five main chapters.
 
-Chapter 2 provides an analysis of the MIMIC-IV data and the method converting the data into a JSON-like format.
-This includes an assortment of MIMIC-IV conventions like how data is stored, what information each table provides, and the information about the columns in that table, \dots
-This chapter will delve into how to search and extract data from the MIMIC-IV database.
+Chapter 2 provides a comprehensive review of existing literature pertaining to the prediction of Acute Kidney Injury,  which consist of its pathophysiology, risk factors, and clinical outcomes.
+By delving into past research, I will explore the various predictive models, risk factors, and early biomarkers identified over the years.
+This examination will shed light on how early prediction of AKI has evolved, highlighting key advancements and methodologies that have contributed to improved predictive accuracy.
+Understanding these foundational studies will provide valuable insights into the development of current prediction strategies and help identify potential areas for further research and innovation in forecasting AKI.
 
-In Chapter 3, I explain in detail the limitations of previous models.
-I also propose some new methods to address those limitations and how they address them.
+In Chapter 3, I inspect the Medical Information Mart for Intensive Care IV (MIMIC-IV) database to establish an method to extract the desired data for predicting AKI. 
+MIMIC-IV, with its rich repository of de-identified health records, offers a valuable resource for studying Acute Kidney Injury and other critical conditions. 
+I will detail the process of navigating the database structure, identifying relevant data fields, and querying the database to retrieve specific datasets. 
+Additionally, I will outline the steps involved in building a robust data pipeline to ensure efficient storage, retrieval, and management of the extracted data. 
+This pipeline will incorporate best practices for data cleaning, transformation, and integration, facilitating seamless downstream analysis and research. 
+By the end of this chapter, a clear framework for leveraging MIMIC-IV data in AKI prediction studies will be established, paving the way for more effective and data-driven medical research.
 
-Chapter 4 details how to build a model to predict AKI in DKA-ICU patients with time series data.
-The foundation of the model uses tensorflow which is a popular and powerful deep learning library.
-This model can receive data not only for the first 24 hours but can receive data up to the present time of the treatment process.
+Chapter 4 details how to build a model to predict Acute Kidney Injury in Diabetic Ketoacidosis patients in the ICU using time series data. 
+The foundation of the model leverages TensorFlow, a popular and powerful deep learning library known for its flexibility and scalability. 
+Unlike previous models that only utilize data from the first 24 hours of ICU admission, this model is designed to continuously receive and process data up to the present time of the treatment process. 
+This continuous data integration allows for real-time predictions and dynamic adjustments, enhancing the model's accuracy and responsiveness. 
+In this chapter, I will explain the step-by-step process of designing, training, and validating this time series model, including the selection of appropriate features, handling missing data, and optimizing hyperparameters. 
+By employing TensorFlow's advanced capabilities, the model aims to provide more timely and accurate predictions of AKI, thereby improving patient outcomes through earlier interventions and tailored treatment plans.
 
-Finally, in Chapter 5, I will compare the results of the built models and evaluate the predictive ability of those models.
-Models will be evaluated based on model evaluation metrics such as AUC and compared with previous models that have been performed in previous studies.
+Finally, in Chapter 5, I will compare the results of the built models and evaluate their predictive ability. 
+These models will be assessed using various model evaluation metrics, such as the Area Under the Curve (AUC), precision, accuracy and recall. 
+By benchmarking these metrics, I will compare the performance of our models against those from previous studies. 
+This comparative analysis will highlight the strengths and weaknesses of each model, providing insights into their effectiveness in predicting acute kidney injury (AKI) in diabetic ketoacidosis (DKA) patients in the ICU. 
+Additionally, I will discuss any observed improvements or shortcomings, offering explanations for the differences in performance. 
+This chapter aims to provide a comprehensive evaluation, ensuring that the most accurate and reliable model is identified for practical implementation in clinical settings.
 
 
 \section{Conclusion}
 In this chapter, I have presented an overview of the project including the problem, goals and solution orientation along with the project's contributions and the project's layout.
 In the next chapters, I will go deeper into each part of the project to solve the problems mentioned in this chapter.
-
-
-
-
-
-% Chú ý: Sinh viên cần viết mô tả thành đoạn văn đầy đủ về nội dung chương. Tuyệt đối không viết ý hay gạch đầu dòng. Chương 1 không cần mô tả trong phần này. 
-
-% Ví dụ tham khảo mô tả chương trong phần bố cục đồ án tốt nghiệp: Chương *** trình bày đóng góp chính của đồ án, đó là một nền tảng ABC cho phép khai phá và tích hợp nhiều nguồn dữ liệu, trong đó mỗi nguồn dữ liệu lại có định dạng đặc thù riêng. Nền tảng ABC được phát triển dựa trên khái niệm DEF, là các module ngữ nghĩa trợ giúp người dùng tìm kiếm, tích hợp và hiển thị trực quan dữ liệu theo mô hình cộng tác và mô hình phân tán.  
-
-% Chú ý: Trong phần nội dung chính, mỗi chương của đồ án nên có phần Tổng quan và Kết chương. Hai phần này đều có định dạng văn bản “Normal”, sinh viên không cần tạo định dạng riêng, ví dụ như không in đậm/in nghiêng, không đóng khung, v.v... 
-
-% Trong phần Tổng quan của chương N, sinh viên nên có sự liên kết với chương N-1 rồi trình bày sơ qua lý do có mặt của chương N và sự cần thiết của chương này trong đồ án. Sau đó giới thiệu những vấn đề sẽ trình bày trong chương này là gì, trong các đề mục lớn nào.
-
-% Ví dụ về phần Tổng quan: Chương 3 đã thảo luận về nguồn gốc ra đời, cơ sở lý thuyết và các nhiệm vụ chính của bài toán tích hợp dữ liệu. Chương 4 này sẽ trình bày chi tiết các công cụ tích hợp dữ liệu theo hướng tiếp cận “mashup”. Với mục đích và phạm vi của đề tài, sáu nhóm công cụ tích hợp dữ liệu chính được trình bày bao gồm: (i) nhóm công cụ ABC trong phần 4.1, (ii) nhóm công cụ DEF trong phần 4.2, nhóm công cụ GHK trong phần 4.3, v.v...
-
-% Trong phần Kết chương, sinh viên đưa ra một số kết luận quan trọng của chương. Những vấn đề mở ra trong Tổng quan cần được tóm tắt lại nội dung và cách giải quyết/thực hiện như thế nào. Sinh viên lưu ý không viết Kết chương giống hệt Tổng quan. Sau khi đọc phần Kết chương, người đọc sẽ nắm được sơ bộ nội dung và giải pháp cho các vấn đề đã trình bày trong chương. Trong Kết chương, Sinh viên nên có thêm câu liên kết tới chương tiếp theo.
-
-% Ví dụ về phần Kết chương: Chương này đã phân tích chi tiết sáu nhóm công cụ tích hợp dữ liệu. Nhóm công cụ ABC và DEF thích hợp với những bài toán tích hợp dữ liệu phạm vi nhỏ. Trong khi đó, nhóm công cụ GHK lại chứng tỏ thế mạnh của mình với những bài toán cần độ chính xác cao, v.v. Từ kết quả nghiên cứu và phân tích về sáu nhóm công cụ tích hợp dữ liệu này, tôi đã thực hiện phát triển phần mềm tự động bóc tách và tích hợp dữ liệu sử dụng nhóm công cụ GHK. Phần này được trình bày trong chương tiếp theo – Chương 5.
-
 
 
 \end{document}
