@@ -35,17 +35,20 @@ The baseline is known or presumed to have occurred within the prior 7 days.
 
 Although the KDIGO guidelines provide a standardized definition of AKI, upon detecting AKI, the damage has already occurred due to either high levels of creatinine or accumulation of waste products in the blood.
 And the need for early prediction of AKI is demanding to prevent further complications and improve patient outcomes.
+That is why my thesis aims to develop a predictive model that can detect the risk of AKI before the serious consequences occur.
 
 While other studies struggled with the subtle nature of AKI, a study by \cite{chen2021nomogram} has developed a nomogram to predict the risk of Acute Kidney Injury for KDA-ICU patients.
 This has shed light for the following researches as ICU patients got monitored more frequently than general patients, which could provide more accurate and abundant data for the prediction model.
 On the flip side, the study used a deprecated definition of AKI and an older MIMIC version, leading falsely labeled AKI patients and small dataset.
 Their best model, achieved an AUC of 0.747, which is a promising result but still has room for improvement.
+One of my proposed upgrades is to use the latest MIMIC-IV database and the most recent definition of AKI to improve the model's accuracy.
 
 Another study by \cite{goceri2021predicting} has proposed using predictive models based on a machine learning approach to identify patients with DKA at increased risk of AKI within 1 week of hospitalization in the intensive care unit.
 With state-of-the-art machine learning algorithms, the study achieved an AUC of 0.800, which is a significant improvement compared to the previous study.
 However, the study did not take into account the changes in patients' indicators over time, which could be crucial for predicting Acute Kidney Injury as the disease progresses. 
 Moreover, the study did not provide a detailed process of extracting the features used in the model, making it difficult to replicate the results.
 The researchers also use some features that are not available during real treatment process such as patient's lethality rate or continuous renal replacement therapy status of the patients which indicate the patient is already in serious stage of Acute Kidney Injury.
+Thus, I planed to remove these features and add frequently occurring measurements as well as propose a new model that can consider the changes in patients' indicators.
 
 
 
