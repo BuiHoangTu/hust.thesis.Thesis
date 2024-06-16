@@ -15,26 +15,39 @@ The second detailed content section suggests a data structure that is more devel
 
 \section{Overview}
 
+Overall steps of the proposed solution are shown in Figure \ref{fig:overall-steps}.
 First, Diabetic Ketoacidosis (DKA) patients who were admitted to ICU are identified through International Classification of Diseases (ICD) codes and ICU stay record.
 Patients with Chronic Kidney Disease (CKD) are excluded since they already have severe kidney problems and predicting AKI in these patients is not meaningful.
 If a patient has multiple admissions, only the first admission is considered because of repeat sampling.
 Next, with patients' identification including subject\_id, hadm\_id, and icustay\_id, other features are extracted from the MIMIC-IV database.
 Many of these features changed with time, so the data is structured in a time series map where in each feature recoded time is used as key and the value is the feature value at that time.
 This data structure also support retrieving the value of features as flat table for compatibility with machine learning models.
+Then, the data is preprocessed and used to train predictive models of the risk of Acute Kidney Injury in DKA patients.
+Finally, the models are evaluate to determine the best model and the best preprocessing method.
 
-% TODO: Add a flowchart of the proposed solution
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Figure/Overall steps.png}
+    \caption{Overall Steps}
+    \label{fig:overall-steps}
+\end{figure}
 
 
-\section{MIMIC-IV analysis}
-% Các chương tiếp theo mô tả chi tiết về các bước, các thuật toán trong giải pháp đề xuất. Có thể trình bày pseudocode cho từng bước. Chú ý, pseudocode chỉ có tác dụng làm chi tiết hoá giải thuật chứ không thay thế được phần thuyết minh về giải thuật. Đối với những chi tiết kỹ thuật khó hiểu nên có các hình minh hoạ để người đọc dễ hiểu. Mỗi một thuật toán/bước thực hiện nên tách ra thành một chương. 
+\section{Dataset}
+
+In this section, we will dive into the MIMIC-IV database to understand its structure and identify relevant features then establish a data structure that is more developer friendly dealing with patients' data.
+
+
+\subsection{MIMIC-IV analysis}
 
 In order to successfully predict the risk of AKI in DKA patients, it is crucial to extract patients' health record from the MIMIC-IV database.
 Thus, the first step is to understand the structure of the MIMIC-IV database and identify the features that are relevant to the prediction of AKI in DKA patients.
+The tree structure of MIMIC-IV is shown in Figure \ref{fig:mimic-iv-structure}.
 
 MIMIC-IV is a large, freely-available database comprising de-identified health-related data associated with over 300.000 distinct patients who were admitted to critical care units.
 It is separated into 2 main categories: hospital data and ICU data.
 
-\begin{figure}[ht]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{Figure/MIMIC-IV_tree.png}
     \caption{MIMIC-IV structure}
@@ -42,7 +55,7 @@ It is separated into 2 main categories: hospital data and ICU data.
 \end{figure}
 
 
-\subsection{Hospital data}
+\subsubsection{Hospital data}
 
 Hospital data stores information about patients' admission, basic information, result of laboratory tests, patients' diagnosis, and other general information.
 Looking deeper into the hospital data, we can see that it is divided into several tables, each of which stores different types of information.
@@ -90,6 +103,7 @@ For instance, if a patient's anchor\_year is 2158, and their anchor\_year\_group
 Finally, the anchor\_age provides the patient age in the given anchor\_year. 
 If the patient was over 89 in the anchor\_year, this anchor\_age has been set to 91 regardless of the actual age of the patient.
 To calculate the actual age of the patient, the following formula can be used: 
+
 \begin{equation}
     actual\_age = anchor\_age + anchor\_year - anchor\_year\_group
 \end{equation}
@@ -101,7 +115,7 @@ By referencing table "d\_icd\_diagnoses", we can find the description of the dia
 % other unrelated tables 
 % services, provider, prescription, microbioevent, drgcodes, hpcpevent, emar, poe, poe_detail, omr, pharmacy, transfer, emar_detail,  
 
-The rest of hospital tables store information for billing and controlling purposes so they are not considered deeply in this thesis. 
+The rest of hospital tables store information for billing and controlling purposes so they are not delved deeply in this thesis.
 For example, table "services" stores information about the services that were provided to patients, representing in columns: subject\_id, hadm\_id, transfertime, prev\_service, curr\_service. 
 And "provider" has a single column "provider\_id" which is the unique identifier for each provider.
 Table "prescription" provides data related to prescriptions issued to patients, including medication details (name, dosage, frequency), prescribing physician, and date/time of prescription.
@@ -109,17 +123,27 @@ Details of microbiology test results, including microorganisms identified, antib
 Table "dgrcodes" or Diagnosis-related group codes contains codes assigned to patients for billing and classification purposes, indicating the type of treatment received.
 
 
-
-
-
-
-\subsection{Intensive Care Unit data}
+\subsubsection{Intensive Care Unit data}
 
 ICU data includes information about patients during their stay in the ICU, including vital signs, medications, interventions, and other information that is recorded promptly.
 
+Like hospital data, ICU data also contains definition table named "d\_items" which stores information about the items that are recorded in the ICU stored in other tables. 
+In this table, we can find 9 columns: itemid, label, abbreviation, linksto, category, unitname, param\_type, lownormalvalue, highnormalvalue.
+Column "label" is the name of the item and "abbreviation" keeps the short name of it.
+Table which the measurements of the item is stored is specified in "linksto".
+With "unitname", we can convert same measurement in different unit one unified unit.
+The rest of columns are not in the scope of the thesis so they are not discussed here.
+
+Table "chartevents" stores information about the measurements that were recorded in the ICU, representing in columns: subject\_id, hadm\_id, stay\_id, caregiver\_id, charttime, storetime, itemid, value, valuenum, valueuom, warning.
+Column "itemid" is the reference to "d\_items" table allowing us to find the name of the item.
+"Valueuom" indicates the unit of the measurement, and "value" and "valuenum" are respectively string representation and number the result of the measurement.
+% Add other columns if needed.
+
+In "outputevents" and "inputevents" table, we can find information about the input and output of patients which is important in evaluate the kidney function.
+A drastic change in urine output could be a sign of kidney failure.
 
 
-\section{Tên của nội dung chi tiết thứ 2}
+% \section{Storage data structure}
 
 
 \end{document}
