@@ -7,10 +7,11 @@
 \begin{document}
 
 In this chapter, I will detail the methodology used to extract and analyze data from the MIMIC-IV database.
-The chapter is divided into three sections: Overview, MIMIC-IV analysis, and the second detailed content.
+The chapter is divided into three sections: Overview, dataset, and models.
 The Overview section provides an overview of the proposed solution, including the main steps involved in the data extraction and analysis process.
-The MIMIC-IV analysis section describes the data structure of MIMIC-IV, how the desired features were identified and  extracted in detail, including the rules for confining patients' personal data of MIMIC-IV database.
-The second detailed content section suggests a data structure that is more developer friendly dealing with patients' data.
+Section dataset describes the data structure of MIMIC-IV, how the desired features were identified and  extracted in detail, including the rules for confining patients' personal data of MIMIC-IV database.
+And how it leads to the implementation of a data structure that is more developer friendly dealing with patients' data.
+The models section illustrates how models and the corresponding preprocessing methods are implemented to predict the risk of Acute Kidney Injury in Diabetic Ketoacidosis patients.
 
 
 \section{Overview}
@@ -39,6 +40,7 @@ In this section, we will dive into the MIMIC-IV database to understand its struc
 
 
 \subsection{MIMIC-IV analysis}
+\label{subsec:MIMIC-IV-analysis}
 
 In order to successfully predict the risk of AKI in DKA patients, it is crucial to extract patients' health record from the MIMIC-IV database.
 Thus, the first step is to understand the structure of the MIMIC-IV database and identify the features that are relevant to the prediction of AKI in DKA patients.
@@ -88,7 +90,7 @@ Column "admittime" is the time when the patient was admitted to the hospital,
 "insurance" is the type of insurance the patient has,
 "language" is the language spoken by the patient,
 "marital\_status" is the marital status of the patient.
-In this table, I focus mostly on "admittime" and identified columns to match DKA-ICU cases with the corresponding geographical features.
+In this table, I focus mostly on "admittime" and identified columns to match DKA-ICU cases with the corresponding demographic features.
 
 Table "labevents" stores information about the laboratory tests that were performed on patients, representing in columns: labevent\_id, subject\_id, hadm\_id, specimen\_id, itemid, order\_provider\_id, charttime, storetime, value, valuenum, valueuom, ref\_range\_lower, ref\_range\_upper, flag, priority, comments.
 Column "labevent\_id" is the unique identifier for each laboratory test, and "itemid" is the reference to "d\_labitems" table.
@@ -137,13 +139,137 @@ The rest of columns are not in the scope of the thesis so they are not discussed
 Table "chartevents" stores information about the measurements that were recorded in the ICU, representing in columns: subject\_id, hadm\_id, stay\_id, caregiver\_id, charttime, storetime, itemid, value, valuenum, valueuom, warning.
 Column "itemid" is the reference to "d\_items" table allowing us to find the name of the item.
 "Valueuom" indicates the unit of the measurement, and "value" and "valuenum" are respectively string representation and number the result of the measurement.
+Most of vital signs come from this table contributing to the detection of organs failure.
 % Add other columns if needed.
 
 In "outputevents" and "inputevents" table, we can find information about the input and output of patients which is important in evaluate the kidney function.
-A drastic change in urine output could be a sign of kidney failure.
+For instance, a drastic change in urine output could be a sign of kidney failure.
 
 
-% \section{Storage data structure}
+\subsection{Storage structure and data extraction}
+
+Since my main contribution lies in taking the fluctuating values of patients' features over time into account, I have designed a data structure that is capable of grouping and keeping measured values in time-respected order.
+Each patient is represented as an object Patient shown in the code below \ref{lst:Patient}.
+
+\begin{lstlisting}[language=Python, caption={class Patient}, label={lst:Patient}]
+    
+class Patient:
+    
+    def __init__(
+        self,
+        subject_id: int,
+        hadm_id: int,
+        stay_id: int,
+        intime: str | datetime | datetime64 | Timestamp,
+        measures: Dict[str, Dict[Timestamp, float] | float]
+    ) -> None:
+        self.subject_id = subject_id
+        self.hadm_id = hadm_id
+        self.stay_id = stay_id
+        self.intime = to_datetime(intime)
+        self.measures: Dict[str, 
+            Dict[Timestamp, float] | float] = SortedDict()
+
+\end{lstlisting}
+
+In this class, the patient is identified by subject\_id, hadm\_id, and stay\_id and "intime" signifies the time when the they were admitted to the ICU.
+The "measures" attribute is a dictionary where patient's demographic, laboratory tests, vital signs and other features are stored with their name as key and value is either a single value for features like age, stage of comorbidities, or a dictionary if the features changed over time i which the key is the time when the measurement was taken and the value is the measurement itself.
+This class also supports the retrieval of the value of a feature at a specific time, which is useful for machine learning models that require a flat table as input.
+
+\begin{lstlisting}[language=Python, caption={getMeasuresBetween method}, label={lst:getMeasuresBetween}]
+
+(method) def getMeasuresBetween(
+    self: Self@Patient,
+    fromTime: Timedelta,
+    toTime: Timedelta,
+    how: str | ((DataFrame) -> float) = "avg",
+    getAkiRealTime: bool = False,
+    measureTypes: Literal['all', 'static', 'time'] = "all"
+) -> DataFrame
+
+\end{lstlisting}
+
+The method getMeasuresBetween \ref{lst:getMeasuresBetween} is used to retrieve the value of features in a time range compared to patient's intime.
+The method takes 4 arguments: fromTime and toTime are the time range, "how" is the method to aggregate the values in the time range if more than one exist, getAkiRealTime is a flag to also return AKI status in the returned DataFrame, finally, measureTypes is the type of features to retrieve which is helpful for models that can process static and time series features separately.
+Parameter "how" can be a string that represents predefined method to aggregate the values in the time range or a function that takes a DataFrame of value and time and returns a single value.
+Currently, the predefined methods are "first" and "last" for the first and last value according to recorded time, " "avg" for average, "std" for standard deviation, "max" for maximum, and "min" for minimum.
+It is also worth noting that the "measures" attribute is a SortedDict which allow this method to run binary search in O(log(n)) time complexity.
+
+This class is also a place gathering all features extracted from MIMIC-IV database with class method "loadPatients".
+When this method is called, it will run sql queries to extract the features from the database.
+For instance, to get urine output of a patients, the following query is used \ref{lst:SQL-urine-output}.
+
+\begin{lstlisting}[language=SQL, caption={SQL query to get urine output}, label={lst:SQL-urine-output}]
+
+    WITH uo AS (
+    SELECT oe.stay_id,
+        oe.charttime,
+        CASE
+            WHEN oe.itemid = 227488
+            AND oe.value > 0 THEN -1 * oe.value
+            ELSE oe.value
+        END AS urineoutput
+    FROM outputevents AS oe
+    WHERE itemid IN (
+            226559
+            /* Foley */
+,
+            226560
+            /* Void */
+,
+            226561
+            /* Condom Cath */
+,
+            226584
+            /* Ileoconduit */
+,
+            226563
+            /* Suprapubic */
+,
+            226564
+            /* R Nephrostomy */
+,
+            226565
+            /* L Nephrostomy */
+,
+            226567
+            /* Straight Cath */
+,
+            226557
+            /* R Ureteral Stent */
+,
+            226558
+            /* L Ureteral Stent */
+,
+            227488
+            /* GU Irrigant Volume In */
+,
+            227489
+            /* GU Irrigant/Urine Volume Out */
+        )
+    )
+    SELECT stay_id,
+        charttime,
+        SUM(urineoutput) AS urineoutput
+    FROM uo
+    GROUP BY stay_id,
+        charttime;
+
+\end{lstlisting}
+
+From this query \ref{lst:SQL-urine-output}, it is clear that the urine output is calculated by summing the output of different types of catheters and stents with an exception "GU Irrigant Volume In" which is negated to represent the output.
+As shown in the previous subsection \ref{subsec:MIMIC-IV-analysis}, the itemid of each measure can be found in "d\_items" table.
+Other features are extracted in a similar way and stored in the "measures" attribute of the Patient object.
+
+
+\section{Models}
+
+
+\subsection{XGBoost}
+This model is proposed by Chen and Guestrin in 2016 \cite{chen2016xgboost}.
+
+
+
 
 
 \end{document}
