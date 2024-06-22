@@ -9,14 +9,14 @@ The purpose of this chapter is to provide an overview of the current state of re
 The scope of this chapter is centered on predicting AKI in patients with Diabetic Ketoacidosis  during their ICU admission, utilizing data from the MIMIC-IV database. 
 The emphasis lies on the development of novel predictive models and data engineering strategies tailored specifically for this population.
 Thus, the focus will be on introducing innovative methodologies rather than extensively examining the relationships between AKI indicators or expanding the dataset.
-In addition, the scope is limited current AKI definition by KDIGO guidelines, which is based on the changes in serum creatinine and urine output.
+In addition, the scope is limited current AKI definition by KDIGO guidelines \cite{kdigo-aki-guideline}, which is based on the changes in serum creatinine and urine output.
 
 
 \section{Related Works}
 
 Several studies have explored the prediction of Acute Kidney Injury in critical care settings, providing valuable insights into the development of predictive models and methodologies. 
 
-Firstly, the KDIGO guidelines offer standardized criteria for detecting AKI, serving as a foundational framework for AKI prediction studies.
+Firstly, the KDIGO guidelines \cite{kdigo-aki-guideline} offer standardized criteria for detecting AKI, serving as a foundational framework for AKI prediction studies.
 The definition of AKI provided by KDIGO is based on the changes in serum creatinine and urine output, which are described as patients who satisfy at least one of the following criteria:
 
 \begin{equation}
@@ -36,13 +36,13 @@ Although the KDIGO guidelines provide a standardized definition of AKI, upon det
 And the need for early prediction of AKI is demanding to prevent further complications and improve patient outcomes.
 That is why my thesis aims to develop a predictive model that can detect the risk of AKI before the serious consequences occur.
 
-While other studies struggled with the subtle nature of AKI, a study by \cite{chen2021nomogram} has developed a nomogram to predict the risk of Acute Kidney Injury for KDA-ICU patients.
+While other studies struggled with the subtle nature of AKI, a study by \citeauthor{monogram-aki-dka} has developed a nomogram to predict the risk of Acute Kidney Injury for KDA-ICU patients.
 This has shed light for the following researches as ICU patients got monitored more frequently than general patients, which could provide more accurate and abundant data for the prediction model.
 On the flip side, the study used a deprecated definition of AKI and an older MIMIC version, leading falsely labeled AKI patients and small dataset.
 Their best model, achieved an AUC of 0.747, which is a promising result but still has room for improvement.
 One of my proposed upgrades is to use the latest MIMIC-IV database and the most recent definition of AKI to improve the model's accuracy.
 
-Another study by \cite{goceri2021predicting} has proposed using predictive models based on a machine learning approach to identify patients with DKA at increased risk of AKI within 1 week of hospitalization in the intensive care unit.
+Another study by \citeauthor{xgboost-aki-dka} has proposed using predictive models based on a machine learning approach to identify patients with DKA at increased risk of AKI within 1 week of hospitalization in the intensive care unit.
 With state-of-the-art machine learning algorithms, the study achieved an AUC of 0.800, which is a significant improvement compared to the previous study.
 However, the study did not take into account the changes in patients' indicators over time, which could be crucial for predicting Acute Kidney Injury as the disease progresses. 
 Moreover, the study did not provide a detailed process of extracting the features used in the model, making it difficult to replicate the results.
