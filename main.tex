@@ -5,7 +5,7 @@
 \usepackage[top=2cm, bottom=2cm, left=3.5cm, right=2.5cm]{geometry}
 \usepackage{xurl}
 \usepackage{appendix}
-\usepackage{babel}
+\usepackage[english]{babel}
 \usepackage{xcolor}
 \usepackage{outlines}
 \usepackage{graphicx} % Cho phép chèn hỉnh ảnh
@@ -52,9 +52,13 @@
 % ===================================================
 
 % \renewcommand{\bibname}{Danh_sach_tai_lieu_tham_khao} 
-\usepackage[backend=bibtex,style=ieee]{biblatex}  %backend=biber is 'better'
-
+\usepackage[backend=biber,style=ieee]{biblatex}  %backend=biber is 'better'
 \addbibresource{reference.bib} % chèn file chứa danh mục tài liệu tham khảo vào 
+% fix long authors
+\DefineBibliographyStrings{english}{%
+  andothers = {et al.},
+}
+
 
 \include{lstlisting} % Phần này cho phép chèn code và formatting code như C, C++, Python
 
