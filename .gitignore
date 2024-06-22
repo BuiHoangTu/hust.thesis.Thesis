@@ -19,6 +19,9 @@
 *.run.xml
 *.toc
 
+# unk latex files
+*.bcf
+
 # pandoc generated files
 *.docx
 *.doc
