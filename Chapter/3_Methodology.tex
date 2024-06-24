@@ -196,7 +196,14 @@ Currently, the predefined methods are "first" and "last" for the first and last 
 It is also worth noting that the "measures" attribute is a SortedDict which allow this method to run binary search in O(log(n)) time complexity.
 
 This class is also a place gathering all features extracted from MIMIC-IV database with class method "loadPatients".
-When this method is called, it will run sql queries to extract the features from the database.
+When this method is called, it will first establish a list of target patients by identifying patients with DKA and detect in them if they got admitted to Intensive Care Unit (ICU).
+This step is done by matching the ICD codes of their hospitalizations with that represent DKA then searching for their hadm\_id in the ICU data, the existence of stay\_id in the ICU data indicates that the patient was admitted to the ICU.
+These patients would be delivered to next filtering step where patients with CKD stage 5 are excluded from the list because not only did the damage caused to their kidneys is already severe and predicting AKI in these patients is not meaningful but also their indicators show a heavy similarity to AKI patients.
+Thus, adding these patients potentially raise the noise in dataset and damage the model's performance.
+After this step, I found 1213 patients with DKA and not CKD stage 5.
+Then, I evaluate patient data during ICU according to \citetitle{kdigo-aki-guideline} \cite{kdigo-aki-guideline} to determine the AKI status of each patient.
+There are 476 patients who is diagnosed with AKI during their ICU stay, or 39.24\% of the target patients.
+Finally, this method run sql queries to extract the features from the database.
 For instance, to get urine output of a patients, the following query is used \ref{lst:SQL-urine-output}.
 
 \begin{lstlisting}[language=SQL, caption={SQL query to get urine output}, label={lst:SQL-urine-output}]
@@ -264,9 +271,21 @@ Other features are extracted in a similar way and stored in the "measures" attri
 
 \section{Models}
 
+In this section, I will describe the models used to predict the risk of Acute Kidney Injury in Diabetic Ketoacidosis patients and the preprocessing methods used to prepare the data for these models.
+The preprocessing methods are separated into two main categories: tabular-based models and time series-based model.
+However, in both categories, reducing missing values is crucial and is achieved in a same way in this thesis.
+First, the features which have more than 20\% missing values are removed.
+Then, patients with more than 20\% missing values are also removed.
+This is to guarantee that after split train-test, the test set still has all features used to train the model.
+The remaining missing values are either left to be Not-a-Number (NaN), filled with zeros or filled using K-Nearest Neighbors (KNN) algorithm.
+We then evaluate which method is the most suitable option for each model. 
+
 
 \subsection{XGBoost}
-This model is proposed by Chen and Guestrin in 2016 \cite{chen2016xgboost}.
+
+XGBoost is a popular machine learning algorithm that is used for regression and classification problems, especially in the field of healthcare because it can handle missing values and is less prone to overfitting.
+It has been state-of-the-art in many medical prediction studies, just to name a few: \citetitle{other-xgboost-aki}, \citetitle{other-xgboost-mimic} or \citetitle{other-xgboost-mimic-2}.
+
 
 
 
