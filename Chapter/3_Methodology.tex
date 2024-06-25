@@ -422,12 +422,77 @@ Shown in Figure \ref{fig:xgboost-tree} is a decision tree of the XGBoost algorit
 We can also see the feature importance of the XGBoost model in Table \ref{tab:xgboost-feature-importance} and the learning curve of the model in Figure \ref{fig:xgboost-learning-curve}.
 
 
+Designed in \citeyear{GRANDE-source} by \citeauthor{GRANDE-source} \cite{GRANDE-source}, GRANDE tackled a gap in tabular-based models prediction with deep learning models.
+It is a deep learning model that excels in handling heterogeneous datasets often found in applications like medical diagnosis.
+Unlike traditional tree-based models that may struggle with the diverse challenges of tabular data, such as missing values, class imbalance, and mixed feature types, GRANDE leverages end-to-end gradient descent to optimize hard, axis-aligned decision trees within an ensemble framework.
+One interesting note about GRANDE is that it requires validate data so in this case, the two no-validate methods are not used.
 
 
+Aside from gradient-based models, TabPFN is a deep learning model that uses a Bayesian approach to clear the relations between features and the target variable.
+The result of relationships founded can be seen in Figure \ref{fig:tabpfn-feature-relation}.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figure/tabpfn-plt-wbc.png}
+        \caption{Feature relation of plt and wbc}
+        \label{fig:tabpfn-plt-wbc}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figure/tabpfn-weight-plt.png}
+        \caption{Feature relation of weight and plt}
+        \label{fig:tabpfn-weight-plt}
+    \end{subfigure}
+
+    \vfill
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figure/tabpfn-weight-rbc.png}
+        \caption{Feature relation of weight and rbc}
+        \label{fig:tabpfn-weight-rbc}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figure/tabpfn-weight-wbc.png}
+        \caption{Feature relation of weight and wbc}
+        \label{fig:tabpfn-weight-wbc}
+    \end{subfigure}
+
+    \caption{Feature relation of TabPFN model}
+    \label{fig:tabpfn-feature-relation}
+\end{figure}
 
 
+\section{Time series-based model}
 
+In this section, I will describe the time series-based model used to predict the risk of Acute Kidney Injury in Diabetic Ketoacidosis patients.
+The model is built using Tensorflow and Keras, it used a Long Short-Term Memory (LSTM) network to learn the temporal dependencies of time dependent features.
 
+It starts the same with tabular-based models where the dataset is split into 5 parts and the model is trained on 4 parts and evaluated on the remaining part.
+Instead of trying to predict the risk of AKI in DKA patients in a long time range of 7 days, this model expects to get patient's monitored status continuously and predict the risk of AKI in the next 24 hours.
+That is why dynamic features' values are extracted in a time window of 1, 2, 3, 4, 6, 12, and 24 hours from the patient's intime up until the time of prediction.
+The patients who are feasible to attend are the one who has not developed AKI from the beginning of the ICU stay to the time of prediction.
+These values are then merged into a vector and fed into the LSTM network.
+The static features are also extracted and fed into the network as a separate input.
+The model is then trained to predict if the patient will develop AKI in the next 24 hours.
+
+Here I will define two types of time windows that will be used in training: the predicting window and the feature window.
+The predicting window is the time window from patient admission to the time of prediction.
+The feature window is the time window with length of 1, 2, 3, 4, 6, 12, and 24 hours.
+These windows are placed continuously in the predicting window.
+Given LPW is the length of the predicting window and LFW is the length of the feature window, the number of feature windows in the predicting window is $LPW \div LFW$.
+
+Since some patients have longer ICU stays than others, I shifted the predicting window in order to retain more training data.
+For example, if a patients develop AKI after 6 days in the ICU, and the predicting window is 3 days, I will resampled this patient as three time windows: the first one is from the intime to 3 days after the intime, the second one is from 2 days after the intime to 4 days after the intime, and the last one is from 3 days after the intime to 5 days after the intime. 
+This way, I can attained more training data and the model can learn the temporal dependencies of the features more effectively.
+
+The model is then evaluated on the test set to determine the best length for feature window and predicting window.
+The best model will then be compared to the tabular-based models to determine the best model for predicting the risk of Acute Kidney Injury in DKA-ICU patients.
 
 
 \end{document}
