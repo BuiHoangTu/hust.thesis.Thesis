@@ -277,14 +277,153 @@ However, in both categories, reducing missing values is crucial and is achieved 
 First, the features which have more than 20\% missing values are removed.
 Then, patients with more than 20\% missing values are also removed.
 This is to guarantee that after split train-test, the test set still has all features used to train the model.
+This process excluded nine features and three patients from the dataset proposed by \citeauthor{xgboost-aki-dka} \cite{xgboost-aki-dka}.
+As one of contributions in this thesis, I added nine features that is commonly measured in target patients leading to the exclude of 6 more patients.
+
+Both datasets are evaluated in same ways to determine if the newly added features are useful in predicting the risk of AKI in DKA patients.
 The remaining missing values are either left to be Not-a-Number (NaN), filled with zeros or filled using K-Nearest Neighbors (KNN) algorithm.
-We then evaluate which method is the most suitable option for each model. 
+We then evaluate which method is the most suitable option for each model.
 
 
-\subsection{XGBoost}
+\subsection{Tabular-based models}
+
+Since the amount of target patients is not large, it is more reasonable to cross validate on the whole population.
+The dataset is split into 5 roughly equal parts of 241-242 patients.
+The I iteratively train the model on 4 parts and evaluate on the remaining part.
+In each iteration, the four training parts are grouped and then using method "getMeasuresBetween" \ref{lst:getMeasuresBetween} to get the table data of the time range 24 hours from the patient's intime.
+Each strategy of aggregate multiple values in the time range is evaluated to determine the best method for predicting AKI in DKA-ICU patients.
+The values are then filtered to remove outlines using the following formula:
+
+\begin{equation}
+    \begin{aligned}
+        Q1 - 1.5 \times IQR &\leq x \leq Q3 + 1.5 \times IQR \\
+        where: \\
+        Q1 &= \text{first quartile} \\
+        Q3 &= \text{third quartile} \\
+        IQR &= Q3 - Q1
+    \end{aligned}
+\end{equation}
+Here, the first quartile is the median of the lower half of the data, the third quartile is the median of the upper half of the data, and the interquartile (IQR) range is the difference between the third and first quartile.
+The values that are outside of this range are considered as outlines and are removed from the dataset.
+The categorical features are then one-hot encoded and the numerical features are standardized Eq.\ref{eq:standardized}.
+
+\begin{equation}
+    \label{eq:standardized}
+    \begin{aligned}
+        x_{\text{standardized}} &= \frac{x - \mu}{\sigma} \\
+        where: \\
+        \mu &= \text{mean of the feature} \\
+        \sigma &= \text{standard deviation of the feature}
+    \end{aligned}
+\end{equation}
+The features are then used to train the model and evaluate the model's performance using the area under the receiver operating characteristic curve (AUC-ROC).
+The average AUC-ROC of the 5 iterations is then calculated to determine the best preprocessing method for the tabular-based models.
+
+For each model, four instances are trained: one with missing values left as NaN or zeros, one with missing values filled by KNN; in the other two, training data is further split into training and validation set to tune the hyperparameters of the model.
+In validate cases, the training set is split again into 5 parts and the model is trained on 4 parts and evaluated on the remaining part.
+This creates 5 models which are wrapped in a voting layer that used median of the predictions to make the final prediction.
+The model is then evaluated on the test set to compete with the other models.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figure/Tabular Steps.png}
+    \caption{Prepare data steps for tabular based predictive models, second iteration}
+    \label{fig:tabular-steps}
+\end{figure}
+
+One of the iteration of the tabular-based models is shown in Figure \ref{fig:tabular-steps} where the second part is chose as test set.
+The four remaining parts are grouped and the data is prepared as described above to produce a training DataFrame and a test DataFrame.
+The training DataFrame is then when through preprocessing steps as mentioned above where outlines is determined and removed, categorical features are one-hot encoded, and numerical features are standardized.
+It is worth noting that the test DataFrame is supposed to not know at the time of training so its outlines and encoders are determined by the training DataFrame instead.
+For training process with validation, it is shown in the Figure \ref{fig:tabular-steps} that the training DataFrame is split into 5 parts and is iteratively used to train five models.
+Which are stayed behind a voting layer to make the final prediction. 
+
+
+In this thesis, I will evaluate the performance of the following tabular-based models: XGBoost \cite{xgboost-source}, GRANDE \cite{GRANDE-source}, and TabPFN\cite{tabpfn}.
+
+
+\begin{figure}[h]%&= \text{mean of the feature} \\
+    \centering
+    \begin{subfigure}{0.8\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figure/xgb_tree_high_quality-mid.png}
+        \caption{Middle part of the decision tree}
+        \label{fig:image1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.8\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figure/xgb_tree_high_quality-left.png}
+        \caption{Left side of the decision tree}
+        \label{fig:image2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.8\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figure/xgb_tree_high_quality-right.png}
+        \caption{Right side of the decision tree}
+        \label{fig:image3}
+    \end{subfigure}
+    \caption{XGBoost decision tree}
+    \label{fig:xgboost-tree}
+\end{figure}
+
+\begin{table}
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Feature} & \textbf{Importance} \\ \hline\hline
+        weight & 412.0 \\ \hline
+        plt & 260.0 \\ \hline
+        rbc & 253.0 \\ \hline
+        wbc & 240.0 \\ \hline
+        preiculos & 237.0 \\ \hline
+        oasis & 232.0 \\ \hline
+        mch & 230.0 \\ \hline
+        age & 229.0 \\ \hline
+        rdw & 213.0 \\ \hline
+        bg & 209.0 \\ \hline
+        sbp & 208.0 \\ \hline
+        egfr & 208.0 \\ \hline
+        saps2 & 202.0 \\ \hline
+        phosphate & 196.0 \\ \hline
+        sofa & 190.0 \\ \hline
+        hr & 186.0 \\ \hline
+        hematocrit & 181.0 \\ \hline
+        mchc & 180.0 \\ \hline
+        scr & 177.0 \\ \hline
+        calcium & 177.0 \\ \hline
+        chloride & 161.0 \\ \hline
+        potassium & 155.0 \\ \hline
+        dbp & 147.0 \\ \hline
+        bun & 147.0 \\ \hline
+        mcv & 146.0 \\ \hline
+        hb & 136.0 \\ \hline
+        sodium & 135.0 \\ \hline
+        rr & 131.0 \\ \hline
+    \end{tabular}
+    \caption{Feature importance of XGBoost model}
+    \label{tab:xgboost-feature-importance}
+\end{table}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figure/xgb-learning-curve.png}
+    \caption{XGBoost learning curve on the 5 iterations}
+    \label{fig:xgboost-learning-curve}
+\end{figure}
 
 XGBoost is a popular machine learning algorithm that is used for regression and classification problems, especially in the field of healthcare because it can handle missing values and is less prone to overfitting.
 It has been state-of-the-art in many medical prediction studies, just to name a few: \citetitle{other-xgboost-aki}, \citetitle{other-xgboost-mimic} or \citetitle{other-xgboost-mimic-2}.
+the XGBoost algorithm is used as a baseline to verify that my target patients are aligned with the dataset proposed by \citeauthor{xgboost-aki-dka} \cite{xgboost-aki-dka} without a large performance gap.
+The algorithm draws series of decision trees to predict the target variable and each tree is assigned a weight based on its performance.
+Shown in Figure \ref{fig:xgboost-tree} is a decision tree of the XGBoost algorithm.
+We can also see the feature importance of the XGBoost model in Table \ref{tab:xgboost-feature-importance} and the learning curve of the model in Figure \ref{fig:xgboost-learning-curve}.
+
+
+
+
 
 
 
