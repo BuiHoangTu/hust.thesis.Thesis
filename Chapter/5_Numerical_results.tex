@@ -3,19 +3,138 @@
 
 % models compare
 
-\textcolor{red}{Chú ý: Chương này là không bắt buộc. Nếu nghiên cứu chỉ có phân tích lý thuyết mà không có thực nghiệm thì sinh viên không cần trình bày chương này }
+In this chapter, we present the numerical results of the proposed models.
+We evaluate the performance of the proposed models on the dataset with different model treatments.
+The proposed models are then compared with the baseline models.
+We also analyze the results to understand the behavior of the proposed models.
+
 
 \section{Evaluation Parameters}
 
-Sinh viên trình bày cụ thể về các tham số dùng trong đánh giá 
+% Sinh viên trình bày cụ thể về các tham số dùng trong đánh giá
+
+In this section we present the evaluation parameters used in the experiments.
+Models are evaluated based on the following metrics:
+AUC-ROC, Precision, Recall, and Accuracy.
+
+
+%%%%%%%% AUC-ROC %%%%%%%%
+AUC-ROC standing for Area Under the Receiver Operating Characteristic curve is a crucial metric for evaluating the performance of binary classification models.
+The ROC curve is a graphical representation that illustrates the diagnostic ability of a binary classifier as its discrimination threshold is varied.
+The ROC curve plots the true positive rate (TPR) against the false positive rate (FPR) at various threshold settings.
+The AUC represents the degree or measure of separability, indicating how well the model can distinguish between the two classes.
+The higher the AUC, the better the model is at predicting 0s as 0s and 1s as 1s.
+The predicted probabilities of each class which show the likelihood of the instance belonging to the positive class are collected.
+Vary the threshold from 0 to 1, for each threshold, classify the instances as positive if the predicted probability is greater than the threshold, otherwise classify as negative.
+Then TPR and FPR are calculated at each threshold $i$.
+Let $x = FPR$ and $y = TPR$, we draw the ROC curve by plotting $x$ against $y$.
+
+To calculate the AUC, we use the trapezoidal rule to approximate the area under the ROC curve shown in Eq.\ref{eq:auc}.
+
+\begin{equation}
+    \label{eq:auc}
+    AUC = \sum_{i=1}^{n-1} \frac{1}{2} (x_{i+1} - x_{i}) (y_{i+1} + y_{i})
+\end{equation}
+
+where $x_i$ and $y_i$ are the FPR and TPR at the $i^{th}$ threshold, respectively.
+
+FPR are false positive rate, calculated by Eq.\ref{eq:fpr}, and TPR are true positive rate, calculated by Eq.\ref{eq:tpr}.
+Where TP, TN, FP, and FN are in order true positive, true negative, false positive, and false negative.
+True positive (TP) is the number of positive instances correctly classified as positive.
+True negative (TN) is the number of negative instances correctly classified as negative.
+False positive (FP) is the number of negative instances incorrectly classified as positive.
+False negative (FN) is the number of positive instances incorrectly classified as negative.
+
+\begin{equation}
+    \label{eq:fpr}
+    FPR = \frac{FP}{FP + TN}
+\end{equation}
+
+\begin{equation}
+    \label{eq:tpr}
+    TPR = \frac{TP}{TP + FN}
+\end{equation}
+
+Using AUC-ROC to evaluate models provides several significant advantages.
+Firstly, it is threshold-independent.
+Many performance metrics, such as accuracy, precision, and recall, depend on selecting a specific threshold to classify predictions.
+However, choosing this threshold can be arbitrary and may not reflect the model's overall performance across all possible thresholds.
+AUC-ROC, on the other hand, evaluates the model's performance across all threshold levels, providing a more comprehensive assessment.
+Secondly, AUC-ROC is an excellent tool for comparing different models.
+In this case we need to compare multiple models and need to decide which one performs better, AUC-ROC offers a clear, single-value summary of each model's performance.
+A model with a higher AUC is generally considered better at distinguishing between the positive and negative classes, regardless of the chosen threshold.
+
+Additionally, AUC-ROC is particularly useful in imbalanced datasets where one class significantly outnumbers the other.
+Traditional accuracy might be misleading in such cases, as a model could achieve high accuracy by simply predicting the majority class.
+However, AUC-ROC focuses on the model's ability to distinguish between classes, providing a more balanced evaluation.
+
+That is why, we use AUC-ROC as the primary metric to evaluate the performance of the models. With its threshold independence, comprehensive performance assessment, robustness against imbalanced data, and utility in model comparison, AUC-ROC provides a  assessment of the models' performance, making it an ideal choice for our evaluation.
+
+
+%%%%%%%% Accuracy %%%%%%%%
+Accuracy is the ratio of correctly predicted instances (both true positives and true negatives) to the total instances in the dataset.
+The formula for accuracy is shown in Eq.\ref{eq:accuracy}.
+
+\begin{equation}
+    \label{eq:accuracy}
+    Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
+\end{equation}
+
+Accuracy is a simple and intuitive metric making it a popular choice.
+However, it can be misleading, especially in cases where the class distribution is imbalanced.
+For instance, in a dataset where 95\% of the instances belong to one class, a model that always predicts the majority class will have high accuracy but has no real-life implications.
+In our dataset, the number of positive instances is 39\%, which is not very imbalanced.
+Thus, this metric is still useful for evaluating the models' performance.
+
+%%%%%%%% Precision %%%%%%%%
+Precision, also known as positive predictive value, is the ratio of correctly predicted positive instances to the total predicted positive instances. It measures the accuracy of the positive predictions made by the model. The formula for precision is:
+
+\begin{equation}
+    \label{eq:precision}
+    Precision = \frac{TP}{TP + FP}
+\end{equation}
+
+Precision is particularly useful in scenarios where the cost of false positives is high, such as in spam detection or medical testing.
+It indicates the quality of the positive predictions made by the model, ensuring that when the model predicts a positive instance, it is likely to be correct.
+On the other hand, precision does not consider false negatives, which can be a limitation in contexts where missing positive instances (false negatives) is critical especially in medical diagnosis or fraud detection.
+In this case, missing protential Acute Kidney Injury (AKI) patients is more critical than misclassifying non-AKI patients as AKI patients so this metric is only for reference.
+
+
+%%%%%%%% Precision %%%%%%%%
+Recall is the ratio of correctly predicted positive instances to all instances that actually belong to the positive class.
+It measures the model's ability to identify all relevant instances.
+The formula for recall is:
+
+\begin{equation}
+    \label{eq:recall}
+    Recall = \frac{TP}{TP + FN}
+\end{equation}
+
+Recall is crucial in scenarios where the cost of false negatives is high like in our case.
+It indicates the model's ability to capture all positive instances, ensuring that the model does not miss any potential positives.
+
+
+%%%%%%%% Heatmap %%%%%%%%
+In addition to the metrics, we also use heatmaps to visualize the confusion matrix.
+The confusion matrix is a table that describes the performance of a classification model on a set of data for which the true values are known.
+It consists of four cells, each representing a different combination of actual and predicted classes.
+The diagonal cells of the confusion matrix represent the number of correct predictions (true positives and true negatives), while the off-diagonal cells represent the number of incorrect predictions (false positives and false negatives).
+
+The confusion matrix offers granular insight into how the model performs across different classes, identifying specific areas where the model may be making errors.
+For instance, it can reveal if the model is particularly prone to false positives or false negatives, which is crucial for applications where the cost of such errors is high.
+Heat maps serve as a visual representation of the confusion matrix, with colors indicating the number of instances in each cell.
+By translating numerical values into color gradients, heat maps make it easier to interpret and analyze the data at a glance.
+Darker or more intense colors typically indicate higher values, allowing for quick identification of patterns and trends in the model's predictions.
+This visual aid can highlight whether certain classes are being consistently misclassified and provide insights into potential reasons for these misclassifications.
+
 
 \section{Simulation Method}
 
-Sinh viên trình bày chi tiết cách thức tiến hành thí nghiệm, ví dụ: các baseline chọn để so sánh là gì? tại sao lại chọn các baseline đấy? Tiến hành bao nhiêu thí nghiệm? mỗi thí nghiệm được thực hiện bao nhiêu lần? Các tham số của thuật toán được chọn như thế nào? Kịch bản thí nghiệm được tạo ra sao? Dữ liệu xử lý thế nào? … Có thể chia  chương này thành các chương nhỏ hơn để tiện trình bày. 
+% Sinh viên trình bày chi tiết cách thức tiến hành thí nghiệm, ví dụ: các baseline chọn để so sánh là gì? tại sao lại chọn các baseline đấy? Tiến hành bao nhiêu thí nghiệm? mỗi thí nghiệm được thực hiện bao nhiêu lần? Các tham số của thuật toán được chọn như thế nào? Kịch bản thí nghiệm được tạo ra sao? Dữ liệu xử lý thế nào? … Có thể chia  chương này thành các chương nhỏ hơn để tiện trình bày. 
 
 \section{Tên của kết quả thí nghiệm 1}
 
-Các chương tiếp theo sinh viên trình bày các kết quả thí nghiệm thu được. Mỗi kết quả nên cho vào một chương. Đối với mỗi kết quả thí nghiệm, cần trình bày các bảng biểu, đồ thị minh hoạ cho kết quả thí nghiệm. Sinh viên cần nêu nhận xét chi tiết về kết quả thí nghiệm, so sánh các phương pháp với nhau, giải thích tại sao kết quả lại như vậy. 
+Các chương tiếp theo sinh viên trình bày các kết quả thí nghiệm thu được. Mỗi kết quả nên cho vào một chương. Đối với mỗi kết quả thí nghiệm, cần trình bày các bảng biểu, đồ thị minh hoạ cho kết quả thí nghiệm. Sinh viên cần nêu nhận xét chi tiết về kết quả thí nghiệm, so sánh các phương pháp với nhau, giải thích tại sao kết quả lại như vậy.
 
 \section{Tên của kết quả thí nghiệm 2}
 
