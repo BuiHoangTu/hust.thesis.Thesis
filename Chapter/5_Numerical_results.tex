@@ -70,7 +70,6 @@ However, AUC-ROC focuses on the model's ability to distinguish between classes, 
 
 That is why, we use AUC-ROC as the primary metric to evaluate the performance of the models. With its threshold independence, comprehensive performance assessment, robustness against imbalanced data, and utility in model comparison, AUC-ROC provides a  assessment of the models' performance, making it an ideal choice for our evaluation.
 
-
 %%%%%%%% Accuracy %%%%%%%%
 Accuracy is the ratio of correctly predicted instances (both true positives and true negatives) to the total instances in the dataset.
 The formula for accuracy is shown in Eq.\ref{eq:accuracy}.
@@ -99,7 +98,6 @@ It indicates the quality of the positive predictions made by the model, ensuring
 On the other hand, precision does not consider false negatives, which can be a limitation in contexts where missing positive instances (false negatives) is critical especially in medical diagnosis or fraud detection.
 In this case, missing protential Acute Kidney Injury (AKI) patients is more critical than misclassifying non-AKI patients as AKI patients so this metric is only for reference.
 
-
 %%%%%%%% Precision %%%%%%%%
 Recall is the ratio of correctly predicted positive instances to all instances that actually belong to the positive class.
 It measures the model's ability to identify all relevant instances.
@@ -112,7 +110,6 @@ The formula for recall is:
 
 Recall is crucial in scenarios where the cost of false negatives is high like in our case.
 It indicates the model's ability to capture all positive instances, ensuring that the model does not miss any potential positives.
-
 
 %%%%%%%% Heatmap %%%%%%%%
 In addition to the metrics, we also use heatmaps to visualize the confusion matrix.
@@ -130,7 +127,46 @@ This visual aid can highlight whether certain classes are being consistently mis
 
 \section{Simulation Method}
 
-% Sinh viên trình bày chi tiết cách thức tiến hành thí nghiệm, ví dụ: các baseline chọn để so sánh là gì? tại sao lại chọn các baseline đấy? Tiến hành bao nhiêu thí nghiệm? mỗi thí nghiệm được thực hiện bao nhiêu lần? Các tham số của thuật toán được chọn như thế nào? Kịch bản thí nghiệm được tạo ra sao? Dữ liệu xử lý thế nào? … Có thể chia  chương này thành các chương nhỏ hơn để tiện trình bày. 
+In this section, I will describe the specific steps taken to implement the simulations for the tabular-based models and the time series-based model to predict the risk of Acute Kidney Injury (AKI) in Diabetic Ketoacidosis (DKA) patients. 
+The aim is to detail the process to generate the numerical results.
+
+For the tabular-based models, the dataset was split into five roughly equal parts to ensure a balanced representation of patients. 
+Each iteration involved training the model on four parts and evaluating on the remaining part. 
+For each patient, data from 24 hours after ICU admission was aggregated. 
+Outliers were removed using the interquartile range (IQR) method, and features were standardized by mean-centering and scaling by standard deviation.
+Categorical features were one-hot encoded to convert them into a numerical format suitable for the models.
+
+Handling missing values was a crucial step. 
+Two different approaches were tested: leaving missing values as NaN or filling them with zeros depend on the suggestion from model's author, and using the K-Nearest Neighbors (KNN) algorithm to estimate the missing values. 
+The method with the best performance for each model was selected. 
+Each tabular-based model underwent cross-validation and hyperparameter tuning. 
+Four versions of each model were trained: one with missing values left as NaN or zeros, one with missing values filled by KNN, and two versions involving using validate set to help model avoid overfitting.
+Model training with validation was performed using cross-validation on the training data, with the training set further split into five parts for validation. 
+A voting layer aggregated predictions from five models trained during cross-validation, using the median prediction as the final output.
+
+The models were evaluated using the area under the receiver operating characteristic curve (AUC-ROC). 
+The average AUC-ROC from the five iterations was calculated to assess the performance of each model. 
+The tabular-based models evaluated in this study were XGBoost, GRANDE, and TabPFN. 
+Detailed descriptions of these models, their specific implementation steps, feature importance, and learning curves are provided in the Chapter \ref{chapter:methodology}.
+
+For the time series-based model, the dataset was also split into five parts, similar to the tabular-based models. 
+For each patient, dynamic feature values were extracted in time windows of 1, 2, 3, 4, 6, 12, and 24 hours up until the prediction time. 
+Missing values were filled with the previous values or zeros if no previous values were available. 
+A Long Short-Term Memory (LSTM) network was used to learn temporal dependencies of the features. 
+Static features were also extracted and used as separate inputs to the LSTM network. 
+The model was trained to predict if a patient would develop AKI in the next 24 hours.
+
+Two types of time windows were defined for training: the predicting window and the feature window. 
+The predicting window spanned from patient admission to the prediction time, while feature windows were defined as time intervals within the predicting window. 
+The number of feature windows was calculated based on the length of the predicting window and feature window. 
+Data augmentation was performed by shifting the predicting windows for patients with longer ICU stays, generating more training data. 
+For example, a patient developing AKI after six days would have predicting windows shifted every day to provide multiple training samples.
+
+The time series model was evaluated on the test set to determine the best lengths for feature and predicting windows. 
+The best-performing time series model was then compared to the tabular-based models to determine the overall best model for predicting AKI in DKA-ICU patients. 
+By following these steps, the simulation method ensures a robust evaluation of different AI models for predicting AKI in DKA patients, ultimately identifying the most effective approach.
+
+
 
 \section{Tên của kết quả thí nghiệm 1}
 
