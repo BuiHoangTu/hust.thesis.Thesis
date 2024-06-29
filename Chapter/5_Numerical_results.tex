@@ -227,12 +227,12 @@ With models trained on the data with the exclusion of indicators happened after 
             Without extra features & 
             0.8159 & 
             0.8226 & 
-            0.7894 \\
+            0 \\
 
             With extra features & 
             0.8283 & 
             0.8275 & 
-            0.7952 \\
+            0 \\
 
             \hline
         \end{tabular}
@@ -271,12 +271,12 @@ First, let's look into the result of each model if missing values is filled with
         Without KNN filling & 
         0.7946 & 
         0.8160 & 
-        0.7887 \\
+        0 \\
 
         With KNN filling & 
         0.7929 & 
         0.8155 & 
-        0.7952 \\
+        0 \\
 
         \hline
     \end{tabular}
@@ -388,17 +388,17 @@ The result is shown in Table \ref{tab:aggregate_methods} is the best result of e
         last & 
         0.8284 & 
         0.8363 & 
-        0.7880 \\
+        0 \\
 
         average & 
         0.8266 & 
         0.8283 & 
-        0.7924 \\
+        0 \\
 
         median &
         0.8279 &
         0.8301 &
-        0.7849 \\
+        0 \\
 
         \hline
     \end{tabular}
@@ -421,7 +421,7 @@ In short, for this problem, the first value aggregate method is the most suitabl
 \section{Comparison of tabular-based models}
 
 In this section, we compare the performance of the tabular-based models. 
-Best performance of each model is shown in Table \ref{tab:tabular_models}.
+From Table \ref{tab:aggregate_methods}, model TabPFN always gives better results than the other models.
 
 \begin{table}[H]
     \centering
@@ -436,23 +436,23 @@ Best performance of each model is shown in Table \ref{tab:tabular_models}.
         \hline
 
         AUC-ROC & 
-        0.7970 & 
-        0.8159 & 
-        0.7952 \\
+        0.8284 $\pm$ 0.0092 & 
+        0.8363 $\pm$ 0.0073& 
+        0 $\pm$ \\
 
         Accuracy &
-        0.7250 &
-        0 &
+        0.7562 &
+        0.7570 &
         0 \\
 
         Precision &
-        0 &
-        0 &
+        0.7165 &
+        0.7189 &
         0 \\
 
         Recall &
-        0 &
-        0 &
+        0.633 &
+        0.6562 &
         0 \\
 
         \hline
@@ -461,8 +461,8 @@ Best performance of each model is shown in Table \ref{tab:tabular_models}.
 
 In AUC-ROC, the value consists of 2 number, the first one stands for average value of the 5 iterations and the second one stands for the standard deviation.
 As can be seen, in all cases, the deviation is very small, indicating that the models are stable and consistent across different iterations.
-The TabPFN model outperforms the other models with an AUC-ROC of 0.8161, followed by XGBoost with an AUC-ROC of 0.7970, and GRANDE with an AUC-ROC of 0.7952.
-Although having quite high AUC-ROC, the models' recall is very low and could result in missing potential AKI patients which is fatal for predictive models in medication. 
+The TabPFN model outperforms the other models with an AUC-ROC of 0.8363, followed by XGBoost with an AUC-ROC of 0.8284, and GRANDE with an AUC-ROC of 0.7952.
+Although having quite high AUC-ROC, the models' recall is very low 0.6562, 0.633 respectively meaning it could result in missing potential AKI patients which is fatal for predictive models in medication. 
 Thus, it is recommended to improve the models' recall to ensure that all potential AKI patients are identified.
 
 \section{Time series-based model performance}
@@ -474,7 +474,7 @@ The key difference is that the time series-based model considers the temporal ch
 It is achieved using 2 serrate inputs: dynamic features and static features.
 Dynamic features capture the temporal changes of patients' indicators, while static features provide additional information about the patients' demographics, comorbidities, and other static characteristics.
 
-The final result is shocking with an AUC-ROC of 0.9996, accuracy of 0.9851, precision of 0.9666 and recall of 0.9979, outperforming all tabular-based models.
+The final result is very promising with an AUC-ROC of 0.9904, accuracy of 0.9385, precision of 0.8963 and recall of 0.9516, outperforming all tabular-based models.
 This result indicates that the time series-based model is highly effective in capturing the temporal changes of patients' indicators and predicting the risk of AKI in DKA patients.
 With such high performance, the time series-based model offers a valuable tool for early detection of AKI and can significantly improve patient outcomes.
 
