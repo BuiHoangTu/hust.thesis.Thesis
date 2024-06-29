@@ -227,12 +227,12 @@ With models trained on the data with the exclusion of indicators happened after 
             Without extra features & 
             0.8159 & 
             0.8226 & 
-            0 \\
+            0.7981 \\
 
             With extra features & 
             0.8283 & 
             0.8275 & 
-            0 \\
+            0.8107 \\
 
             \hline
         \end{tabular}
@@ -271,12 +271,12 @@ First, let's look into the result of each model if missing values is filled with
         Without KNN filling & 
         0.7946 & 
         0.8160 & 
-        0 \\
+        0.7887 \\
 
         With KNN filling & 
         0.7929 & 
         0.8155 & 
-        0 \\
+        0.7952 \\
 
         \hline
     \end{tabular}
@@ -348,6 +348,38 @@ First, let's look into the result of each model if missing values is filled with
             \hline
         \end{tabular}
     \end{subtable}
+
+    \vspace{1cm}
+
+    \begin{subtable}{\textwidth}
+        \centering
+        \caption{GRANDE}
+
+        \begin{tabular}{|c|c|c|c|c|c|}
+            \hline
+            \textbf{} & 
+            \textbf{First} & 
+            \textbf{Last} & 
+            \textbf{Average} &
+            \textbf{Median} \\
+            \hline
+
+            Without KNN filling & 
+            0.7968 & 
+            0.8065 & 
+            0.7891 &
+            0.8086 \\
+
+            With KNN filling & 
+            0.795 & 
+            0.8107 & 
+            0.7907 &
+            0.7966 \\
+
+            \hline
+        \end{tabular}
+    \end{subtable}
+
 \end{table}
 
 As we can see, filling missing values with KNN does not improve the XGBoost model's performance in both cases of exclusion and non-exclusion.
@@ -359,6 +391,9 @@ This could be due to unnecessary noise introduced by the KNN algorithm using dat
 However, in the case of exclusion, the model's performance consistently improved by roughly 1\% across all aggregate methods.
 As stated by \citeauthor{tabpfn}, TabPFN works best with non-missing data, the KNN algorithm helps fill in the missing values and improve the model's performance.
 
+The GRANDE model's performance is improved with KNN filling in the case of non-exclusion.
+On the other hand, in the case of exclusion, the model's behavior is inconsistent across different aggregate methods.
+Whether to use KNN filling with this model needs further investigation.
 
 
 \section{Comparison of aggregate methods}
@@ -383,39 +418,33 @@ The result is shown in Table \ref{tab:aggregate_methods} is the best result of e
         first & 
         0.8128 & 
         0.8271 & 
-        0.7879 \\
+        0.7968 \\
 
         last & 
         0.8284 & 
         0.8363 & 
-        0 \\
+        0.8107 \\
 
         average & 
         0.8266 & 
         0.8283 & 
-        0 \\
+        0.7907 \\
 
         median &
         0.8279 &
         0.8301 &
-        0 \\
+        0.8086 \\
 
         \hline
     \end{tabular}
 \end{table}
 
-The results show that both XGBoost and TabPFN models perform best with the last value aggregate method.
+The results show that all tabular-based models perform best with the last value aggregate method.
 This can be attributed to the nature of the data, where the last value of a feature is much closer to the prediction time and may provide more relevant information for predicting AKI.
 However, some of patients developed AKI during the first 24 hours of ICU admission rendering the usage last value less convincing.
-In the second place, the median value aggregate method is the best for both models.
+In the second place, the median value aggregate method is the best for them.
 This method is less sensitive to outliers and may provide a more robust representation of the data.
 In addition, at any predicting time, the median value is always be available.
-
-While the GRANDE model performs best with the average aggregate method, the different of AUC-ROC in the case is negligible (< 0.5 \%).
-In short, for this problem, the first value aggregate method is the most suitable for the tabular-based models
-
-
-
 
 
 \section{Comparison of tabular-based models}
@@ -438,22 +467,22 @@ From Table \ref{tab:aggregate_methods}, model TabPFN always gives better results
         AUC-ROC & 
         0.8284 $\pm$ 0.0092 & 
         0.8363 $\pm$ 0.0073& 
-        0 $\pm$ \\
+        0.8107 $\pm$ 0.0115 \\
 
         Accuracy &
         0.7562 &
         0.7570 &
-        0 \\
+        0.7488 \\
 
         Precision &
         0.7165 &
         0.7189 &
-        0 \\
+        0.6977 \\
 
         Recall &
         0.633 &
         0.6562 &
-        0 \\
+        0.6414 \\
 
         \hline
     \end{tabular}
@@ -461,9 +490,11 @@ From Table \ref{tab:aggregate_methods}, model TabPFN always gives better results
 
 In AUC-ROC, the value consists of 2 number, the first one stands for average value of the 5 iterations and the second one stands for the standard deviation.
 As can be seen, in all cases, the deviation is very small, indicating that the models are stable and consistent across different iterations.
-The TabPFN model outperforms the other models with an AUC-ROC of 0.8363, followed by XGBoost with an AUC-ROC of 0.8284, and GRANDE with an AUC-ROC of 0.7952.
-Although having quite high AUC-ROC, the models' recall is very low 0.6562, 0.633 respectively meaning it could result in missing potential AKI patients which is fatal for predictive models in medication. 
+The TabPFN model outperforms the other models with an AUC-ROC of 0.8363, followed by XGBoost with an AUC-ROC of 0.8284, and GRANDE with an AUC-ROC of 0.8107.
+Although having quite high AUC-ROC, the models' recall is very low 0.6562, 0.633 and 0.6414 respectively meaning it could result in missing potential AKI patients which is fatal for predictive models in medication.
+Of three tabular-based models, TabPFN is the best choice for predicting AKI in DKA-ICU patients. 
 Thus, it is recommended to improve the models' recall to ensure that all potential AKI patients are identified.
+
 
 \section{Time series-based model performance}
 
