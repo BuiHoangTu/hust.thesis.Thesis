@@ -474,22 +474,31 @@ In this section, I will describe the time series-based model used to predict the
 The model is built using Tensorflow and Keras, it used a Long Short-Term Memory (LSTM) network to learn the temporal dependencies of time dependent features.
 
 It starts the same with tabular-based models where the dataset is split into 5 parts and the model is trained on 4 parts and evaluated on the remaining part.
-Instead of trying to predict the risk of AKI in DKA patients in a long time range of 7 days, this model expects to get patient's monitored status continuously and predict the risk of AKI in the next 24 hours.
-That is why dynamic features' values are extracted in a time window of 1, 2, 3, 4, 6, 12, and 24 hours from the patient's intime up until the time of prediction.
+Dynamic features' values are extracted in a time window of 1, 2, 3, 4, 6, and 12 hours from the patient's intime up to 24 hours after the intime.
+Missing values are filled with previous ones and then the rest of missing values are filled with zeros.
 The patients who are feasible to attend are the one who has not developed AKI from the beginning of the ICU stay to the time of prediction.
 These values are then merged into a vector and fed into the LSTM network.
 The static features are also extracted and fed into the network as a separate input.
-The model is then trained to predict if the patient will develop AKI in the next 24 hours.
+The model is then trained to predict if the patient will develop AKI in the next 7 days.
 
-Here I will define two types of time windows that will be used in training: the predicting window and the feature window.
-The predicting window is the time window from patient admission to the time of prediction.
-The feature window is the time window with length of 1, 2, 3, 4, 6, 12, and 24 hours.
-These windows are placed continuously in the predicting window.
-Given LPW is the length of the predicting window and LFW is the length of the feature window, the number of feature windows in the predicting window is $LPW \div LFW$.
+For illustration, Figure \ref{fig:time-series-steps} shows the process of preparing data for the time series-based model.
 
-Since some patients have longer ICU stays than others, I shifted the predicting window in order to retain more training data.
-For example, if a patients develop AKI after 6 days in the ICU, and the predicting window is 3 days, I will resampled this patient as three time windows: the first one is from the intime to 3 days after the intime, the second one is from 2 days after the intime to 4 days after the intime, and the last one is from 3 days after the intime to 5 days after the intime. 
-This way, I can attained more training data and the model can learn the temporal dependencies of the features more effectively.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Figure/time-series-steps.png}
+    \caption{Prepare data steps for time series-based predictive model}
+    \label{fig:time-series-steps}
+\end{figure}
+
+From each patient, their static features which does not change over the course ICU stay are extracted as a 1D array.
+The dynamic features are extracted in $n$ time window of 1, 2, 3, 4, 6 from the patient's intime up until the time of prediction.
+This result in $24 \times n$ arrays of dynamic features during each time window.
+The missing value are then filled with previous values and the rest are filled with zeros.
+Note that the values shown in Figure \ref{fig:time-series-steps} are for presentation purpose only, the actual values may or may not be the same.
+The array of dynamic features are then concatenated to form a 2D array.
+
+The static features are used to train the static part of the model and the dynamic features are used to train the dynamic part of the model.
+The result of the two parts are then concatenated and fed into a dense layer to make the final prediction.
 
 The model is then evaluated on the test set to determine the best length for feature window and predicting window.
 The best model will then be compared to the tabular-based models to determine the best model for predicting the risk of Acute Kidney Injury in DKA-ICU patients.
