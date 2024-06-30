@@ -50,6 +50,54 @@ The researchers also use some features that are not available during real treatm
 Thus, I planed to remove these features and add frequently occurring measurements as well as propose a new model that can consider the changes in patients' indicators.
 
 
+\section{Loss function and Early stopping}
+
+Since the thesis focus on deep learning models, it is important to understand the loss function and early stopping technique.
+
+
+\subsection{Loss Function}
+
+Loss function is a measure of how well the model is performing on the training data. In this study, the loss function used is the binary cross-entropy loss function, which is commonly used for binary classification problems.
+Binary cross-entropy, also known as log loss, evaluates the performance of a model that predicts probabilities for two possible outcomes (typically labeled as 0 and 1). 
+The formula for binary cross-entropy loss for a single sample is given by:
+
+\begin{equation}
+    \mathcal{L}(y, \hat{y}) = -y \log(\hat{y}) - (1 - y) \log(1 - \hat{y})
+\end{equation}
+where $y$ represents the true binary label (either 0 or 1), and $\hat{y}$ represents the predicted probability of the positive class (class 1).
+This loss function operates on the probability output of the model, penalizing incorrect predictions based on the difference between the predicted probability and the true label.
+
+When $y=1$ (indicating the actual label is positive), the loss function penalizes the more $\hat{y}$ deviates from 1.
+With $- \log(\hat{y})$ term, the loss increases as the predicted probability $\hat{y}$ approaches 0 due to the nature of the logarithm function which increases sharply as its argument approaches zero.
+In contrast, when $y=0$ (indicating the actual label is negative), the loss increases as $\hat{y}$ deviates from 0.
+Here, the $- \log(1 - \hat{y})$ term penalizes the model more as the predicted probability $\hat{y}$ approaches 1, reflecting the model's penalty for predicting a higher probability for the positive class than is appropriate.
+
+The key characteristics of binary cross-entropy include its non-negative range, making it ideal for measuring classification accuracy in terms of probabilistic predictions. 
+In practical applications, this loss function is calculated across all examples in a batch during training and then averaged to provide an overall assessment of the model's performance on that batch. 
+It is widely implemented in machine learning frameworks for tasks such as medical diagnosis (where the outcome is binary, like disease presence or absence). 
+Understanding the nuances of binary cross-entropy helps in effectively training models for binary classification tasks by guiding the model towards optimal probability predictions for each class label.
+
+
+\subsection{Early Stopping}
+Early stopping is a regularization technique used in machine learning and deep learning to prevent overfitting of models to training data. 
+Overfitting occurs when a model learns not only the underlying pattern in the data but also noise and random fluctuations, which hinders its ability to generalize to new, unseen data. 
+To address this, early stopping monitors the performance metrics of a model on a separate validation dataset throughout the training process.
+
+During training, the model's performance metrics (such as accuracy, loss, or validation error) are continuously evaluated on the validation set, which is distinct from the training data. 
+Typically, these metrics improve on the training data as the model learns, but they may start to degrade on the validation set if the model begins to overfit. 
+Early stopping intervenes by stopping the training process when the monitored metric on the validation set stops improving or starts to worsen beyond a specified threshold.
+
+A critical parameter in early stopping is the patience value, which determines the number of epochs the model can continue training without improvement before stopping.
+This parameter functions as a safeguard against stopping the training process too early due to minor fluctuations in the validation metric.
+By setting an appropriate patience value, the model can continue training when the validation metric improves, even after a few epochs of stagnation or local degradation.
+For instance, if the patience value is set to 5, the model will continue training for up to 5 epochs without improvement before stopping.
+During this five-epoch period, if the validation metric improves, the model will continue training until the next degradation or the maximum number of epochs is reached.
+If the validation metric does not improve within the patience window, the training process is halted, and the model with the best validation performance is saved.
+
+In short, early stopping is a valuable technique for preventing overfitting and improving the generalization ability of machine learning models, it promotes model robustness and enhances generalization by striking a balance between model complexity and performance on unseen data.
+
+
+
 % TODO: Add theoretical knowledge about models
 \section{Predictive Models}
 
