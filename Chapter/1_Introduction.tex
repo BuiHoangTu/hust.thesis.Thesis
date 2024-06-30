@@ -152,20 +152,16 @@ Chapter 2 provides a comprehensive review of existing literature pertaining to t
 By delving into past research, I will explore the various predictive models, risk factors, and early biomarkers identified over the years.
 This examination will shed light on how early prediction of AKI has evolved, highlighting key advancements and methodologies that have contributed to improved predictive accuracy.
 Understanding these foundational studies will provide valuable insights into the development of current prediction strategies and help identify potential areas for further research and innovation in forecasting AKI.
+In addition, this chapter will also review the literature background of models and techniques used in predicting AKI in DKA-ICU patients, providing a basis for the subsequent chapters.
 
-In Chapter 3, I inspect the Medical Information Mart for Intensive Care IV (MIMIC-IV) database to establish an method to extract the desired data for predicting AKI. 
+In Chapter 3, I illustrate the process of extracting and preparing data from the MIMIC-IV database for predicting Acute Kidney Injury in Diabetic Ketoacidosis patients in the ICU.
+This includes the inspection the Medical Information Mart for Intensive Care IV (MIMIC-IV) database to establish an method to extract the desired data for predicting AKI. 
 MIMIC-IV, with its rich repository of de-identified health records, offers a valuable resource for studying Acute Kidney Injury and other critical conditions. 
 I will detail the process of navigating the database structure, identifying relevant data fields, and querying the database to retrieve specific datasets. 
 Additionally, I will outline the steps involved in building a robust data pipeline to ensure efficient storage, retrieval, and management of the extracted data. 
 This pipeline will incorporate best practices for data cleaning, transformation, and integration, facilitating seamless downstream analysis and research. 
-By the end of this chapter, a clear framework for leveraging MIMIC-IV data in AKI prediction studies will be established, paving the way for more effective and data-driven medical research.
-
-Chapter 4 details how to build a model to predict Acute Kidney Injury in Diabetic Ketoacidosis patients in the ICU using time series data. 
-The foundation of the model leverages TensorFlow, a popular and powerful deep learning library known for its flexibility and scalability. 
-Unlike previous models that only utilize data from the first 24 hours of ICU admission, this model is designed to continuously receive and process data up to the present time of the treatment process. 
-This continuous data integration allows for real-time predictions and dynamic adjustments, enhancing the model's accuracy and responsiveness. 
-In this chapter, I will explain the step-by-step process of designing, training, and validating this time series model, including the selection of appropriate features, handling missing data, and optimizing hyperparameters. 
-By employing TensorFlow's advanced capabilities, the model aims to provide more timely and accurate predictions of AKI, thereby improving patient outcomes through earlier interventions and tailored treatment plans.
+This gives a clear framework for leveraging MIMIC-IV data in AKI prediction studies will be established, paving the way for more effective and data-driven medical research.
+By the end of this chapter, I will provide the approach to each models in order to gain the best performance.
 
 Finally, in Chapter 5, I will compare the results of the built models and evaluate their predictive ability. 
 These models will be assessed using various model evaluation metrics, such as the Area Under the Curve (AUC), precision, accuracy and recall. 
