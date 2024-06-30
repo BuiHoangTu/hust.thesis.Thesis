@@ -505,8 +505,9 @@ The key difference is that the time series-based model considers the temporal ch
 It is achieved using 2 serrate inputs: dynamic features and static features.
 Dynamic features capture the temporal changes of patients' indicators, while static features provide additional information about the patients' demographics, comorbidities, and other static characteristics.
 
-The final result is very promising with an AUC-ROC of 0.9904, accuracy of 0.9385, precision of 0.8963 and recall of 0.9516, outperforming all tabular-based models.
-This result indicates that the time series-based model is highly effective in capturing the temporal changes of patients' indicators and predicting the risk of AKI in DKA patients.
-With such high performance, the time series-based model offers a valuable tool for early detection of AKI and can significantly improve patient outcomes.
+The final result is AUC-ROC of 0.8123, accuracy of 0.7523, precision of 0.73 and recall of 0.6705, worse than TabPFN and XGBoost but better than GRANDE.
+This poor result even with the time series-based model could be attributed to the lack of data.
+In addition, the time series-based model is not sensitive enough to predict a long event of 7 days, which is 7 times longer than that provided in the dataset.
+However, its recall is highest among all models, rendering the model's potential in this usecase.
 
 \end{document}
