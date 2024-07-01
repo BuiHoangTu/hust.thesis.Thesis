@@ -6,10 +6,10 @@
 
 \begin{document}
 
-In this chapter, I will detail the methodology used to extract and analyze data from the MIMIC-IV database.
+In this chapter, I will detail the methodology used to extract and analyze data from the \gls{MIMIC-IV} database.
 The chapter is divided into three sections: Overview, dataset, and models.
 The Overview section provides an overview of the proposed solution, including the main steps involved in the data extraction and analysis process.
-Section dataset describes the data structure of MIMIC-IV, how the desired features were identified and  extracted in detail, including the rules for confining patients' personal data of MIMIC-IV database.
+Section dataset describes the data structure of MIMIC-IV, how the desired features were identified and  extracted in detail, including the rules for confining patients' personal data of \gls{MIMIC-IV} database.
 And how it leads to the implementation of a data structure that is more developer friendly dealing with patients' data.
 The models section illustrates how models and the corresponding preprocessing methods are implemented to predict the risk of Acute Kidney Injury in Diabetic Ketoacidosis patients.
 
@@ -17,13 +17,13 @@ The models section illustrates how models and the corresponding preprocessing me
 \section{Overview}
 
 Overall steps of the proposed solution are shown in Figure \ref{fig:overall-steps}.
-First, Diabetic Ketoacidosis (DKA) patients who were admitted to ICU are identified through International Classification of Diseases (ICD) codes and ICU stay record.
-Patients with Chronic Kidney Disease (CKD) are excluded since they already have severe kidney problems and predicting AKI in these patients is not meaningful.
+First, \gls{DKA} patients who were admitted to \gls{ICU} are identified through \gls{ICD} codes and \gls{ICU} stay record.
+Patients with \gls{CKD} are excluded since they already have severe kidney problems and predicting \gls{AKI} in these patients is not meaningful.
 If a patient has multiple admissions, only the first admission is considered because of repeat sampling.
-Next, with patients' identification including subject\_id, hadm\_id, and icustay\_id, other features are extracted from the MIMIC-IV database.
+Next, with patients' identification including subject\_id, hadm\_id, and icustay\_id, other features are extracted from the \gls{MIMIC-IV} database.
 Many of these features changed with time, so the data is structured in a time series map where in each feature recoded time is used as key and the value is the feature value at that time.
 This data structure also support retrieving the value of features as flat table for compatibility with machine learning models.
-Then, the data is preprocessed and used to train predictive models of the risk of Acute Kidney Injury in DKA patients.
+Then, the data is preprocessed and used to train predictive models of the risk of Acute Kidney Injury in \gls{DKA} patients.
 Finally, the models are evaluate to determine the best model and the best preprocessing method.
 
 \begin{figure}[h]
@@ -36,18 +36,18 @@ Finally, the models are evaluate to determine the best model and the best prepro
 
 \section{Dataset}
 
-In this section, we will dive into the MIMIC-IV database to understand its structure and identify relevant features then establish a data structure that is more developer friendly dealing with patients' data.
+In this section, we will dive into the \gls{MIMIC-IV} database to understand its structure and identify relevant features then establish a data structure that is more developer friendly dealing with patients' data.
 
 
 \subsection{MIMIC-IV analysis}
 \label{subsec:MIMIC-IV-analysis}
 
-In order to successfully predict the risk of AKI in DKA patients, it is crucial to extract patients' health record from the MIMIC-IV database.
-Thus, the first step is to understand the structure of the MIMIC-IV database and identify the features that are relevant to the prediction of AKI in DKA patients.
-The tree structure of MIMIC-IV is shown in Figure \ref{fig:mimic-iv-structure}.
+In order to successfully predict the risk of \gls{AKI} in \gls{DKA} patients, it is crucial to extract patients' health record from the \gls{MIMIC-IV} database.
+Thus, the first step is to understand the structure of the \gls{MIMIC-IV} database and identify the features that are relevant to the prediction of \gls{AKI} in \gls{DKA} patients.
+The tree structure of \gls{MIMIC-IV} is shown in Figure \ref{fig:mimic-iv-structure}.
 
 MIMIC-IV is a large, freely-available database comprising de-identified health-related data associated with over 300.000 distinct patients who were admitted to critical care units.
-It is separated into 2 main categories: hospital data and ICU data.
+It is separated into 2 main categories: hospital data and \gls{ICU} data.
 
 \begin{figure}[h]
     \centering
@@ -63,16 +63,16 @@ Hospital data stores information about patients' admission, basic information, r
 Looking deeper into the hospital data, we can see that it is divided into several tables, each of which stores different types of information.
 It is easy to notice that there are some table with "d\_" prefix, which means that these tables store definitions of the data in other tables.
 
-For example, in "d\_icd\_diagnoses" table, we can find information about the International Classification of Diseases (ICD) codes, representing in columns: icd\_code, icd\_version, long\_title.
+For example, in "d\_icd\_diagnoses" table, we can find information about the \gls{ICD} codes, representing in columns: icd\_code, icd\_version, long\_title.
 This table describes respectively the code for the diagnose, the version of the code (currently in MIMIC-IV, both version 9 and 10 are supported) and finally the description of the the diagnosis which is its technical name.
 Its code and version are referred in the other table like "diagnoses\_icd" table to mark patients with positive diagnosis of the disease.
-Thank to them, I could find the ICD codes for DKA and CKD to identify patients with DKA and exclude patients with CKD.
+Thank to them, I could find the \gls{ICD} codes for \gls{DKA} and \gls{CKD} to identify patients with \gls{DKA} and exclude patients with CKD.
 
 With "d\_icd\_procedures" table, we can find information about which procedures were performed on patients, representing in columns: icd\_code, icd\_version, long\_title.
-It is very helpful to determine the interventions that were performed on patients, which could affect the risk of AKI in DKA patients.
+It is very helpful to determine the interventions that were performed on patients, which could affect the risk of \gls{AKI} in \gls{DKA} patients.
 
 In "d\_labitems" table, we can find information about the laboratory tests that were performed on patients, representing in columns: itemid, label, fluid, category. Column "itemid" is the unique identifier for each laboratory test and will be referred by other tables like "labevents" table to store the result of the test for each patients. Other columns are the label or name of the test, the fluid that was tested (e.g. blood, urine, etc.), and the category of the test (e.g. chemistry, blood gas, etc.).
-As laboratory tests contains many important features used in predicting the risk of AKI in DKA patients, this table helps in identify the itemid of the tests that are relevant to the prediction.
+As laboratory tests contains many important features used in predicting the risk of \gls{AKI} in \gls{DKA} patients, this table helps in identify the itemid of the tests that are relevant to the prediction.
 
 Table "d\_hcpcs" stores information about the Healthcare Common Procedure Coding System (HCPCS) codes, representing in columns: hcpcs\_code, short\_description, long\_description.
 This table functions similarly to the "d\_icd\_procedures" table, but it uses HCPCS standard which is primarily used in the United States of America.
@@ -90,7 +90,7 @@ Column "admittime" is the time when the patient was admitted to the hospital,
 "insurance" is the type of insurance the patient has,
 "language" is the language spoken by the patient,
 "marital\_status" is the marital status of the patient.
-In this table, I focus mostly on "admittime" and identified columns to match DKA-ICU cases with the corresponding demographic features.
+In this table, I focus mostly on "admittime" and identified columns to match \gls{DKA-ICU} cases with the corresponding demographic features.
 
 Table "labevents" stores information about the laboratory tests that were performed on patients, representing in columns: labevent\_id, subject\_id, hadm\_id, specimen\_id, itemid, order\_provider\_id, charttime, storetime, value, valuenum, valueuom, ref\_range\_lower, ref\_range\_upper, flag, priority, comments.
 Column "labevent\_id" is the unique identifier for each laboratory test, and "itemid" is the reference to "d\_labitems" table.
@@ -111,7 +111,7 @@ To calculate the actual age of the patient, the following formula can be used:
 \end{equation}
 
 Diagnose information are stored in "diagnoses\_icd" table, representing in columns: subject\_id, hadm\_id, seq\_num, icd\_code, icd\_version. 
-By referencing table "d\_icd\_diagnoses", we can find the description of the diagnose by the code and version and identify who has DKA and CKD stage 5.
+By referencing table "d\_icd\_diagnoses", we can find the description of the diagnose by the code and version and identify who has \gls{DKA} and \gls{CKD} stage 5.
 
 
 % other unrelated tables 
@@ -129,7 +129,7 @@ Table "dgrcodes" or Diagnosis-related group codes contains codes assigned to pat
 
 ICU data includes information about patients during their stay in the ICU, including vital signs, medications, interventions, and other information that is recorded promptly.
 
-Like hospital data, ICU data also contains definition table named "d\_items" which stores information about the items that are recorded in the ICU stored in other tables. 
+Like hospital data, \gls{ICU} data also contains definition table named "d\_items" which stores information about the items that are recorded in the \gls{ICU} stored in other tables. 
 In this table, we can find 9 columns: itemid, label, abbreviation, linksto, category, unitname, param\_type, lownormalvalue, highnormalvalue.
 Column "label" is the name of the item and "abbreviation" keeps the short name of it.
 Table which the measurements of the item is stored is specified in "linksto".
@@ -190,19 +190,19 @@ This class also supports the retrieval of the value of a feature at a specific t
 \end{lstlisting}
 
 The method getMeasuresBetween \ref{lst:getMeasuresBetween} is used to retrieve the value of features in a time range compared to patient's intime.
-The method takes 4 arguments: fromTime and toTime are the time range, "how" is the method to aggregate the values in the time range if more than one exist, getAkiRealTime is a flag to also return AKI status in the returned DataFrame, finally, measureTypes is the type of features to retrieve which is helpful for models that can process static and time series features separately.
+The method takes 4 arguments: fromTime and toTime are the time range, "how" is the method to aggregate the values in the time range if more than one exist, getAkiRealTime is a flag to also return \gls{AKI} status in the returned DataFrame, finally, measureTypes is the type of features to retrieve which is helpful for models that can process static and time series features separately.
 Parameter "how" can be a string that represents predefined method to aggregate the values in the time range or a function that takes a DataFrame of value and time and returns a single value.
 Currently, the predefined methods are "first" and "last" for the first and last value according to recorded time, " "avg" for average, "std" for standard deviation, "max" for maximum, and "min" for minimum.
 It is also worth noting that the "measures" attribute is a SortedDict which allow this method to run binary search in O(log(n)) time complexity.
 
-This class is also a place gathering all features extracted from MIMIC-IV database with class method "loadPatients".
-When this method is called, it will first establish a list of target patients by identifying patients with DKA and detect in them if they got admitted to Intensive Care Unit (ICU).
-This step is done by matching the ICD codes of their hospitalizations with that represent DKA then searching for their hadm\_id in the ICU data, the existence of stay\_id in the ICU data indicates that the patient was admitted to the ICU.
-These patients would be delivered to next filtering step where patients with CKD stage 5 are excluded from the list because not only did the damage caused to their kidneys is already severe and predicting AKI in these patients is not meaningful but also their indicators show a heavy similarity to AKI patients.
+This class is also a place gathering all features extracted from \gls{MIMIC-IV} database with class method "loadPatients".
+When this method is called, it will first establish a list of target patients by identifying patients with \gls{DKA} and detect in them if they got admitted to \gls{ICU}.
+This step is done by matching the \gls{ICD} codes of their hospitalizations with that represent \gls{DKA} then searching for their hadm\_id in the \gls{ICU} data, the existence of stay\_id in the \gls{ICU} data indicates that the patient was admitted to the ICU.
+These patients would be delivered to next filtering step where patients with \gls{CKD} stage 5 are excluded from the list because not only did the damage caused to their kidneys is already severe and predicting \gls{AKI} in these patients is not meaningful but also their indicators show a heavy similarity to \gls{AKI} patients.
 Thus, adding these patients potentially raise the noise in dataset and damage the model's performance.
-After this step, I found 1213 patients with DKA and not CKD stage 5.
-Then, I evaluate patient data during ICU according to \citetitle{kdigo-aki-guideline} \cite{kdigo-aki-guideline} to determine the AKI status of each patient.
-There are 476 patients who is diagnosed with AKI during their ICU stay, or 39.24\% of the target patients.
+After this step, I found 1213 patients with \gls{DKA} and not \gls{CKD} stage 5.
+Then, I evaluate patient data during \gls{ICU} according to \citetitle{kdigo-aki-guideline} \cite{kdigo-aki-guideline} to determine the \gls{AKI} status of each patient.
+There are 476 patients who is diagnosed with \gls{AKI} during their \gls{ICU} stay, or 39.24\% of the target patients.
 Finally, this method run sql queries to extract the features from the database.
 For instance, to get urine output of a patients, the following query is used \ref{lst:SQL-urine-output}.
 
@@ -280,8 +280,8 @@ This is to guarantee that after split train-test, the test set still has all fea
 This process excluded nine features and three patients from the dataset proposed by \citeauthor{xgboost-aki-dka} \cite{xgboost-aki-dka}.
 As one of contributions in this thesis, I added nine features that is commonly measured in target patients leading to the exclude of 6 more patients.
 
-Both datasets are evaluated in same ways to determine if the newly added features are useful in predicting the risk of AKI in DKA patients.
-The remaining missing values are either left to be Not-a-Number (NaN), filled with zeros or filled using K-Nearest Neighbors (KNN) algorithm.
+Both datasets are evaluated in same ways to determine if the newly added features are useful in predicting the risk of \gls{AKI} in \gls{DKA} patients.
+The remaining missing values are either left to be Not-a-Number (NaN), filled with zeros or filled using \gls{KNN} algorithm.
 We then evaluate which method is the most suitable option for each model.
 
 
@@ -291,7 +291,7 @@ Since the amount of target patients is not large, it is more reasonable to cross
 The dataset is split into 5 roughly equal parts of 241-242 patients.
 The I iteratively train the model on 4 parts and evaluate on the remaining part.
 In each iteration, the four training parts are grouped and then using method "getMeasuresBetween" \ref{lst:getMeasuresBetween} to get the table data of the time range 24 hours from the patient's intime.
-Each strategy of aggregate multiple values in the time range is evaluated to determine the best method for predicting AKI in DKA-ICU patients.
+Each strategy of aggregate multiple values in the time range is evaluated to determine the best method for predicting \gls{AKI} in \gls{DKA-ICU} patients.
 The values are then filtered to remove outlines using the following formula:
 
 \begin{equation}
@@ -316,7 +316,7 @@ The categorical features are then one-hot encoded and the numerical features are
         \sigma &= \text{standard deviation of the feature}
     \end{aligned}
 \end{equation}
-The features are then used to train the model and evaluate the model's performance using the area under the receiver operating characteristic curve (AUC-ROC).
+The features are then used to train the model and evaluate the model's performance using the \gls{AUC-ROC}.
 The average AUC-ROC of the 5 iterations is then calculated to determine the best preprocessing method for the tabular-based models.
 
 For each model, four instances are trained: one with missing values left as NaN or zeros, one with missing values filled by KNN; in the other two, training data is further split into training and validation set to tune the hyperparameters of the model.
@@ -339,7 +339,7 @@ For training process with validation, it is shown in the Figure \ref{fig:tabular
 Which are stayed behind a voting layer to make the final prediction. 
 
 
-In this thesis, I will evaluate the performance of the following tabular-based models: XGBoost \cite{xgboost-source}, GRANDE \cite{GRANDE-source}, and TabPFN\cite{tabpfn}.
+In this thesis, I will evaluate the performance of the following tabular-based models: XGBoost \cite{xgboost-source}, \gls{GRANDE} \cite{GRANDE-source}, and TabPFN \cite{tabpfn}.
 
 
 \begin{figure}[h]%&= \text{mean of the feature} \\
@@ -422,10 +422,10 @@ Shown in Figure \ref{fig:xgboost-tree} is a decision tree of the XGBoost algorit
 We can also see the feature importance of the XGBoost model in Table \ref{tab:xgboost-feature-importance} and the learning curve of the model in Figure \ref{fig:xgboost-learning-curve}.
 
 
-Designed in \citeyear{GRANDE-source} by \citeauthor{GRANDE-source} \cite{GRANDE-source}, GRANDE tackled a gap in tabular-based models prediction with deep learning models.
+Designed in \citeyear{GRANDE-source} by \citeauthor{GRANDE-source} \cite{GRANDE-source}, \gls{GRANDE} tackled a gap in tabular-based models prediction with deep learning models.
 It is a deep learning model that excels in handling heterogeneous datasets often found in applications like medical diagnosis.
-Unlike traditional tree-based models that may struggle with the diverse challenges of tabular data, such as missing values, class imbalance, and mixed feature types, GRANDE leverages end-to-end gradient descent to optimize hard, axis-aligned decision trees within an ensemble framework.
-One interesting note about GRANDE is that it requires validate data so in this case, the two no-validate methods are not used.
+Unlike traditional tree-based models that may struggle with the diverse challenges of tabular data, such as missing values, class imbalance, and mixed feature types, \gls{GRANDE} leverages end-to-end gradient descent to optimize hard, axis-aligned decision trees within an ensemble framework.
+One interesting note about \gls{GRANDE} is that it requires validate data so in this case, the two no-validate methods are not used.
 
 
 Aside from gradient-based models, TabPFN is a deep learning model that employs a Bayesian approach to clear the relations between features and the target variable.
@@ -502,15 +502,15 @@ Despite having no great improvement since the 10th epoch, the model still learne
 \subsection{Time series-based model}
 
 In this section, I will describe the time series-based model used to predict the risk of Acute Kidney Injury in Diabetic Ketoacidosis patients.
-The model is built using Tensorflow and Keras, it used a Long Short-Term Memory (LSTM) network to learn the temporal dependencies of time dependent features.
+The model is built using Tensorflow and Keras, it used a \gls{LSTM} network to learn the temporal dependencies of time dependent features.
 
 It starts the same with tabular-based models where the dataset is split into 5 parts and the model is trained on 4 parts and evaluated on the remaining part.
 Dynamic features' values are extracted in a time window of 1, 2, 3, 4, 6, and 12 hours from the patient's intime up to 24 hours after the intime.
 Missing values are filled with previous ones and then the rest of missing values are filled with zeros.
-The patients who are feasible to attend are the one who has not developed AKI from the beginning of the ICU stay to the time of prediction.
-These values are then merged into a vector and fed into the LSTM network.
+The patients who are feasible to attend are the one who has not developed \gls{AKI} from the beginning of the \gls{ICU} stay to the time of prediction.
+These values are then merged into a vector and fed into the \gls{LSTM} network.
 The static features are also extracted and fed into the network as a separate input.
-The model is then trained to predict if the patient will develop AKI in the next 7 days.
+The model is then trained to predict if the patient will develop \gls{AKI} in the next 7 days.
 
 For illustration, Figure \ref{fig:time-series-steps} shows the process of preparing data for the time series-based model.
 
@@ -521,7 +521,7 @@ For illustration, Figure \ref{fig:time-series-steps} shows the process of prepar
     \label{fig:time-series-steps}
 \end{figure}
 
-From each patient, their static features which does not change over the course ICU stay are extracted as a 1D array.
+From each patient, their static features which does not change over the course \gls{ICU} stay are extracted as a 1D array.
 The dynamic features are extracted in $n$ time window of 1, 2, 3, 4, 6 from the patient's intime up until the time of prediction.
 This result in $24 \times n$ arrays of dynamic features during each time window.
 The missing value are then filled with previous values and the rest are filled with zeros.
@@ -532,7 +532,7 @@ The static features are used to train the static part of the model and the dynam
 The result of the two parts are then concatenated and fed into a dense layer to make the final prediction.
 
 The model is then evaluated on the test set to determine the best length for feature window and predicting window.
-The best model will then be compared to the tabular-based models to determine the best model for predicting the risk of Acute Kidney Injury in DKA-ICU patients.
+The best model will then be compared to the tabular-based models to determine the best model for predicting the risk of Acute Kidney Injury in \gls{DKA-ICU} patients.
 
 
 \end{document}

@@ -18,16 +18,16 @@ AUC-ROC, Precision, Recall, and Accuracy.
 
 %%%%%%%% AUC-ROC %%%%%%%%
 AUC-ROC standing for Area Under the Receiver Operating Characteristic curve is a crucial metric for evaluating the performance of binary classification models.
-The ROC curve is a graphical representation that illustrates the diagnostic ability of a binary classifier as its discrimination threshold is varied.
-The ROC curve plots the true positive rate (TPR) against the false positive rate (FPR) at various threshold settings.
-The AUC represents the degree or measure of separability, indicating how well the model can distinguish between the two classes.
+The \gls{ROC} curve is a graphical representation that illustrates the diagnostic ability of a binary classifier as its discrimination threshold is varied.
+The \gls{ROC} curve plots the true positive rate (TPR) against the false positive rate (FPR) at various threshold settings.
+The \gls{AUC} represents the degree or measure of separability, indicating how well the model can distinguish between the two classes.
 The higher the AUC, the better the model is at predicting 0s as 0s and 1s as 1s.
 The predicted probabilities of each class which show the likelihood of the instance belonging to the positive class are collected.
 Vary the threshold from 0 to 1, for each threshold, classify the instances as positive if the predicted probability is greater than the threshold, otherwise classify as negative.
 Then TPR and FPR are calculated at each threshold $i$.
-Let $x = FPR$ and $y = TPR$, we draw the ROC curve by plotting $x$ against $y$.
+Let $x = FPR$ and $y = TPR$, we draw the \gls{ROC} curve by plotting $x$ against $y$.
 
-To calculate the AUC, we use the trapezoidal rule to approximate the area under the ROC curve shown in Eq.\ref{eq:auc}.
+To calculate the AUC, we use the trapezoidal rule to approximate the area under the \gls{ROC} curve shown in Eq.\ref{eq:auc}.
 
 \begin{equation}
     \label{eq:auc}
@@ -60,7 +60,7 @@ However, choosing this threshold can be arbitrary and may not reflect the model'
 AUC-ROC, on the other hand, evaluates the model's performance across all threshold levels, providing a more comprehensive assessment.
 Secondly, AUC-ROC is an excellent tool for comparing different models.
 In this case we need to compare multiple models and need to decide which one performs better, AUC-ROC offers a clear, single-value summary of each model's performance.
-A model with a higher AUC is generally considered better at distinguishing between the positive and negative classes, regardless of the chosen threshold.
+A model with a higher \gls{AUC} is generally considered better at distinguishing between the positive and negative classes, regardless of the chosen threshold.
 
 Additionally, AUC-ROC is particularly useful in imbalanced datasets where one class significantly outnumbers the other.
 Traditional accuracy might be misleading in such cases, as a model could achieve high accuracy by simply predicting the majority class.
@@ -94,7 +94,7 @@ Precision, also known as positive predictive value, is the ratio of correctly pr
 Precision is particularly useful in scenarios where the cost of false positives is high, such as in spam detection or medical testing.
 It indicates the quality of the positive predictions made by the model, ensuring that when the model predicts a positive instance, it is likely to be correct.
 On the other hand, precision does not consider false negatives, which can be a limitation in contexts where missing positive instances (false negatives) is critical especially in medical diagnosis or fraud detection.
-In this case, missing protential Acute Kidney Injury (AKI) patients is more critical than misclassifying non-AKI patients as AKI patients so this metric is only for reference.
+In this case, missing protential \gls{AKI} patients is more critical than misclassifying non-AKI patients as \gls{AKI} patients so this metric is only for reference.
 
 %%%%%%%% Precision %%%%%%%%
 Recall is the ratio of correctly predicted positive instances to all instances that actually belong to the positive class.
@@ -125,7 +125,7 @@ This visual aid can highlight whether certain classes are being consistently mis
 
 \section{Simulation Method}
 
-In this section, I will describe the specific steps taken to implement the simulations for the tabular-based models and the time series-based model to predict the risk of Acute Kidney Injury (AKI) in Diabetic Ketoacidosis (DKA) patients.
+In this section, I will describe the specific steps taken to implement the simulations for the tabular-based models and the time series-based model to predict the risk of \gls{AKI} in \gls{DKA} patients.
 The aim is to detail the process to generate the numerical results.
 The machine used in this thesis to run the experiments run on Ubuntu 22.04 with 32GB of RAM, an Intel Core i7-14700K CPU, and an NVIDIA GeForce RTX 4060 GPU. 
 The experiments were conducted using Python version 3.8.10 and TensorFlow version 2.7.0. 
@@ -133,19 +133,19 @@ Other liberaries are specified in file requirements.txt in provided source code.
 
 For the tabular-based models, the dataset was split into five roughly equal parts to ensure a balanced representation of patients.
 Each iteration involved training the model on four parts and evaluating on the remaining part.
-For each patient, data from 24 hours after ICU admission was aggregated.
+For each patient, data from 24 hours after \gls{ICU} admission was aggregated.
 Outliers were removed using the interquartile range (IQR) method, and features were standardized by mean-centering and scaling by standard deviation.
 Categorical features were one-hot encoded to convert them into a numerical format suitable for the models.
 
 Handling missing values was a crucial step.
-Two different approaches were tested: leaving missing values as NaN or filling them with zeros depend on the suggestion from model's author, and using the K-Nearest Neighbors (KNN) algorithm to estimate the missing values.
+Two different approaches were tested: leaving missing values as NaN or filling them with zeros depend on the suggestion from model's author, and using the \gls{KNN} algorithm to estimate the missing values.
 The method with the best performance for each model was selected.
 Each tabular-based model underwent cross-validation and hyperparameter tuning.
 Four versions of each model were trained: one with missing values left as NaN or zeros, one with missing values filled by KNN, and two versions involving using validate set to help model avoid overfitting.
 Model training with validation was performed using cross-validation on the training data, with the training set further split into five parts for validation.
 A voting layer aggregated predictions from five models trained during cross-validation, using the median prediction as the final output.
 
-The models were evaluated using the area under the receiver operating characteristic curve (AUC-ROC).
+The models were evaluated using the \gls{AUC-ROC}.
 The average AUC-ROC from the five iterations was calculated to assess the performance of each model.
 The tabular-based models evaluated in this study were XGBoost, GRANDE, and TabPFN.
 Detailed descriptions of these models, their specific implementation steps, feature importance, and learning curves are provided in the Chapter \ref{chapter:methodology}.
@@ -153,19 +153,19 @@ Detailed descriptions of these models, their specific implementation steps, feat
 For the time series-based model, the dataset was also split into five parts, similar to the tabular-based models.
 For each patient, dynamic feature values were extracted in time windows of 1, 2, 3, 4, 6, 12, and 24 hours up until the prediction time.
 Missing values were filled with the previous values or zeros if no previous values were available.
-A Long Short-Term Memory (LSTM) network was used to learn temporal dependencies of the features.
-Static features were also extracted and used as separate inputs to the LSTM network.
-The model was trained to predict if a patient would develop AKI in the next 24 hours.
+A Long Short-Term Memory network was used to learn temporal dependencies of the features.
+Static features were also extracted and used as separate inputs to the \gls{LSTM} network.
+The model was trained to predict if a patient would develop \gls{AKI} in the next 24 hours.
 
 Two types of time windows were defined for training: the predicting window and the feature window.
 The predicting window spanned from patient admission to the prediction time, while feature windows were defined as time intervals within the predicting window.
 The number of feature windows was calculated based on the length of the predicting window and feature window.
-Data augmentation was performed by shifting the predicting windows for patients with longer ICU stays, generating more training data.
-For example, a patient developing AKI after six days would have predicting windows shifted every day to provide multiple training samples.
+Data augmentation was performed by shifting the predicting windows for patients with longer \gls{ICU} stays, generating more training data.
+For example, a patient developing \gls{AKI} after six days would have predicting windows shifted every day to provide multiple training samples.
 
 The time series model was evaluated on the test set to determine the best lengths for feature and predicting windows.
-The best-performing time series model was then compared to the tabular-based models to determine the overall best model for predicting AKI in DKA-ICU patients.
-By following these steps, the simulation method ensures a robust evaluation of different AI models for predicting AKI in DKA patients, ultimately identifying the most effective approach.
+The best-performing time series model was then compared to the tabular-based models to determine the overall best model for predicting \gls{AKI} in \gls{DKA-ICU} patients.
+By following these steps, the simulation method ensures a robust evaluation of different AI models for predicting \gls{AKI} in \gls{DKA} patients, ultimately identifying the most effective approach.
 
 
 
@@ -177,7 +177,7 @@ Since they only used the first value of each features, the data leakage is not a
 However, this study tests for the best aggregate method for each feature, so there exists data that was collected after the development of AKI.
 To avoid data leakage, I excluded all features that were collected after the development of AKI.
 
-To be inclusive, in this section, the models trained on the data without the exclusion of indicators happened after the development of AKI is also illustrated in Table \ref{tab:extra-features-no-exclusion} but the valid result is only the one with "first" aggregate method.
+To be inclusive, in this section, the models trained on the data without the exclusion of indicators happened after the development of \gls{AKI} is also illustrated in Table \ref{tab:extra-features-no-exclusion} but the valid result is only the one with "first" aggregate method.
 With models trained on the data with the exclusion of indicators happened after the development of AKI, the best AUC-ROC of all aggregate methods is evaluated.
 
 \begin{table}[H]
@@ -242,19 +242,19 @@ With models trained on the data with the exclusion of indicators happened after 
 \end{table}
 
 Overall, the extra features offers small improvement to the models' performance of roughly 0.5\% to 1\%.
-Although the increase is not significant, it is consistent across all models, indicating that the extra features do provide some value in predicting AKI in DKA patients.
+Although the increase is not significant, it is consistent across all models, indicating that the extra features do provide some value in predicting \gls{AKI} in \gls{DKA} patients.
 Thus, it is recommended to include these extra features in the dataset to improve the predictive ability of the models.
 
-Is is also visible that the exclusion of indicators happened after the development of AKI makes positive impact on the models' performance.
+Is is also visible that the exclusion of indicators happened after the development of \gls{AKI} makes positive impact on the models' performance.
 The exclusion is necessary to avoid data leakage and ensure the models' predictions are based on available data at the time of prediction.
-It also reduced noise of AKI related intervention in the dataset helping the training process to focus on the development of AKI itself.
+It also reduced noise of \gls{AKI} related intervention in the dataset helping the training process to focus on the development of \gls{AKI} itself.
 Because of that, the rest of this chapter will only focus on the models trained on the data with the exclusion of indicators happened after the development of AKI.
 
 
 \section{Impact of data filling with K-Nearest Neighbors}
 
 In this section, we compare the performance of the tabular-based models with different missing value handling methods.
-First, let's look into the result of each model if missing values is filled with KNN or not.
+First, let's look into the result of each model if missing values is filled with \gls{KNN} or not.
 
 \begin{table}[H]
     \centering
@@ -383,18 +383,18 @@ First, let's look into the result of each model if missing values is filled with
 
 \end{table}
 
-As we can see, filling missing values with KNN does not improve the XGBoost model's performance in both cases of exclusion and non-exclusion.
+As we can see, filling missing values with \gls{KNN} does not improve the XGBoost model's performance in both cases of exclusion and non-exclusion.
 This may be the result of the nature of the XGBoost model, which is less sensitive to missing values.
-The introduction of noise from the KNN algorithm in this case caused negative effects on the model's performance.
+The introduction of noise from the \gls{KNN} algorithm in this case caused negative effects on the model's performance.
 
-With TabPFN model, in the case of non-exclusion, the model's performance is slightly worse with KNN filling.
-This could be due to unnecessary noise introduced by the KNN algorithm using data with noise of AKI intervention.
+With TabPFN model, in the case of non-exclusion, the model's performance is slightly worse with \gls{KNN} filling.
+This could be due to unnecessary noise introduced by the \gls{KNN} algorithm using data with noise of \gls{AKI} intervention.
 However, in the case of exclusion, the model's performance consistently improved by roughly 1\% across all aggregate methods.
-As stated by \citeauthor{tabpfn}, TabPFN works best with non-missing data, the KNN algorithm helps fill in the missing values and improve the model's performance.
+As stated by \citeauthor{tabpfn}, TabPFN works best with non-missing data, the \gls{KNN} algorithm helps fill in the missing values and improve the model's performance.
 
-The GRANDE model's performance is improved with KNN filling in the case of non-exclusion.
+The \gls{GRANDE} model's performance is improved with \gls{KNN} filling in the case of non-exclusion.
 On the other hand, in the case of exclusion, the model's behavior is inconsistent across different aggregate methods.
-Whether to use KNN filling with this model needs further investigation.
+Whether to use \gls{KNN} filling with this model needs further investigation.
 
 
 \section{Comparison of aggregate methods}
@@ -442,7 +442,7 @@ The result is shown in Table \ref{tab:aggregate_methods} is the best result of e
 
 The results show that all tabular-based models perform best with the last value aggregate method.
 This can be attributed to the nature of the data, where the last value of a feature is much closer to the prediction time and may provide more relevant information for predicting AKI.
-However, some of patients developed AKI during the first 24 hours of ICU admission rendering the usage last value less convincing.
+However, some of patients developed \gls{AKI} during the first 24 hours of \gls{ICU} admission rendering the usage last value less convincing.
 In the second place, the median value aggregate method is the best for them.
 This method is less sensitive to outliers and may provide a more robust representation of the data.
 In addition, at any predicting time, the median value is always be available.
@@ -491,10 +491,10 @@ From Table \ref{tab:aggregate_methods}, model TabPFN always gives better results
 
 In AUC-ROC, the value consists of 2 number, the first one stands for average value of the 5 iterations and the second one stands for the standard deviation.
 As can be seen, in all cases, the deviation is very small, indicating that the models are stable and consistent across different iterations.
-The TabPFN model outperforms the other models with an AUC-ROC of 0.8363, followed by XGBoost with an AUC-ROC of 0.8284, and GRANDE with an AUC-ROC of 0.8107.
-Although having quite high AUC-ROC, the models' recall is very low 0.6562, 0.633 and 0.6414 respectively meaning it could result in missing potential AKI patients which is fatal for predictive models in medication.
-Of three tabular-based models, TabPFN is the best choice for predicting AKI in DKA-ICU patients. 
-Thus, it is recommended to improve the models' recall to ensure that all potential AKI patients are identified.
+The TabPFN model outperforms the other models with an AUC-ROC of 0.8363, followed by XGBoost with an AUC-ROC of 0.8284, and \gls{GRANDE} with an AUC-ROC of 0.8107.
+Although having quite high AUC-ROC, the models' recall is very low 0.6562, 0.633 and 0.6414 respectively meaning it could result in missing potential \gls{AKI} patients which is fatal for predictive models in medication.
+Of three tabular-based models, TabPFN is the best choice for predicting \gls{AKI} in \gls{DKA-ICU} patients. 
+Thus, it is recommended to improve the models' recall to ensure that all potential \gls{AKI} patients are identified.
 
 
 \section{Time series-based model performance}

@@ -6,18 +6,18 @@ The purpose of this chapter is to provide an overview of the current state of re
 
 
 \section{Scope of Research}
-The scope of this chapter is centered on predicting AKI in patients with Diabetic Ketoacidosis  during their ICU admission, utilizing data from the MIMIC-IV database.
+The scope of this chapter is centered on predicting \gls{AKI} in patients with Diabetic Ketoacidosis  during their \gls{ICU} admission, utilizing data from the \gls{MIMIC-IV} database.
 The emphasis lies on the development of novel predictive models and data engineering strategies tailored specifically for this population.
-Thus, the focus will be on introducing innovative methodologies rather than extensively examining the relationships between AKI indicators or expanding the dataset.
-In addition, the scope is limited current AKI definition by KDIGO guidelines \cite{kdigo-aki-guideline}, which is based on the changes in serum creatinine and urine output.
+Thus, the focus will be on introducing innovative methodologies rather than extensively examining the relationships between \gls{AKI} indicators or expanding the dataset.
+In addition, the scope is limited current \gls{AKI} definition by KDIGO guidelines \cite{kdigo-aki-guideline}, which is based on the changes in serum creatinine and urine output.
 
 
 \section{Related Works}
 
 Several studies have explored the prediction of Acute Kidney Injury in critical care settings, providing valuable insights into the development of predictive models and methodologies.
 
-Firstly, the KDIGO guidelines \cite{kdigo-aki-guideline} offer standardized criteria for detecting AKI, serving as a foundational framework for AKI prediction studies.
-The definition of AKI provided by KDIGO is based on the changes in serum creatinine and urine output, which are described as patients who satisfy at least one of the following criteria:
+Firstly, the KDIGO guidelines \cite{kdigo-aki-guideline} offer standardized criteria for detecting AKI, serving as a foundational framework for \gls{AKI} prediction studies.
+The definition of \gls{AKI} provided by \gls{KDIGO} is based on the changes in serum creatinine and urine output, which are described as patients who satisfy at least one of the following criteria:
 
 \begin{equation}
     \text{ Increase in SCr by } \geq 0.3 \text{ mg/dL } \text{ within 48 hours}
@@ -33,17 +33,17 @@ The baseline is known or presumed to have occurred within the prior 7 days.
 \end{equation}
 
 Although the KDIGO guidelines provide a standardized definition of AKI, upon detecting AKI, the damage has already occurred due to either high levels of creatinine or accumulation of waste products in the blood.
-And the need for early prediction of AKI is demanding to prevent further complications and improve patient outcomes.
-That is why my thesis aims to develop a predictive model that can detect the risk of AKI before the serious consequences occur.
+And the need for early prediction of \gls{AKI} is demanding to prevent further complications and improve patient outcomes.
+That is why my thesis aims to develop a predictive model that can detect the risk of \gls{AKI} before the serious consequences occur.
 
 While other studies struggled with the subtle nature of AKI, a study by \citeauthor{monogram-aki-dka} has developed a nomogram to predict the risk of Acute Kidney Injury for KDA-ICU patients.
-This has shed light for the following researches as ICU patients got monitored more frequently than general patients, which could provide more accurate and abundant data for the prediction model.
-On the flip side, the study used a deprecated definition of AKI and an older MIMIC version, leading falsely labeled AKI patients and small dataset.
-Their best model, achieved an AUC of 0.747, which is a promising result but still has room for improvement.
-One of my proposed upgrades is to use the latest MIMIC-IV database and the most recent definition of AKI to improve the model's accuracy.
+This has shed light for the following researches as \gls{ICU} patients got monitored more frequently than general patients, which could provide more accurate and abundant data for the prediction model.
+On the flip side, the study used a deprecated definition of \gls{AKI} and an older \gls{MIMIC} version, leading falsely labeled \gls{AKI} patients and small dataset.
+Their best model, achieved an \gls{AUC} of 0.747, which is a promising result but still has room for improvement.
+One of my proposed upgrades is to use the latest \gls{MIMIC-IV} database and the most recent definition of \gls{AKI} to improve the model's accuracy.
 
-Another study by \citeauthor{xgboost-aki-dka} has proposed using predictive models based on a machine learning approach to identify patients with DKA at increased risk of AKI within 1 week of hospitalization in the intensive care unit.
-With state-of-the-art machine learning algorithms, the study achieved an AUC of 0.800, which is a significant improvement compared to the previous study.
+Another study by \citeauthor{xgboost-aki-dka} has proposed using predictive models based on a machine learning approach to identify patients with \gls{DKA} at increased risk of \gls{AKI} within 1 week of hospitalization in the intensive care unit.
+With state-of-the-art machine learning algorithms, the study achieved an \gls{AUC} of 0.800, which is a significant improvement compared to the previous study.
 However, the study did not take into account the changes in patients' indicators over time, which could be crucial for predicting Acute Kidney Injury as the disease progresses.
 Moreover, the study did not provide a detailed process of extracting the features used in the model, making it difficult to replicate the results.
 The researchers also use some features that are not available during real treatment process such as patient's lethality rate or continuous renal replacement therapy status of the patients which indicate the patient is already in serious stage of Acute Kidney Injury.
@@ -104,7 +104,7 @@ In short, early stopping is a valuable technique for preventing overfitting and 
 
 \subsection{Extreme Gradient Boosting (XGBoost)}
 
-Proposed in \citetitle{xgboost-aki-dka}, XGBoost is currently state-of-the-art in machine learning algorithms for predicting AKI in patients with Diabetic Ketoacidosis.
+Proposed in \citetitle{xgboost-aki-dka}, XGBoost is currently state-of-the-art in machine learning algorithms for predicting \gls{AKI} in patients with Diabetic Ketoacidosis.
 The implication of XGBoost is reflected in the amount of studies that have utilized the algorithm to predict patient's outcomes like in \citetitle{other-xgboost-aki}, \citetitle{other-xgboost-mimic} or \citetitle{other-xgboost-mimic-2}.
 
 Extreme Gradient Boosting (XGBoost) is an advanced implementation of the gradient boosting machine learning algorithm.
@@ -241,8 +241,8 @@ Defining a space of hypotheses $\Phi$ on the relationship of a set of inputs $x$
 Each hypothesis $\phi \in \Phi$ is a function generating a data distribution from which the authors draw samples forming a dataset.
 Explained by \citeauthor{tabpfn}, given a prior based on structural causal models, $\Phi$ is the space of structural causal models, a hypothesis $\phi$ is one specific SCM, and a dataset comprises samples generated through this SCM.
 In practice, a dataset comprises training data with observed labels and test data where labels are missing or held out to assess predictive performance.
-The PPD for a test sample $x_{test}$ specifies the distribution of its label $p(\cdot|x_{test},D_{train})$, which is conditioned on the set of training samples $D_{train} := \{(x_1,y_1), \dots, (x_n,y_n)\}$.
-The PPD can be obtained by integration over the space of hypotheses $\Phi$, where the weight of a hypothesis $\phi\in\Phi$ is determined by its prior probability $p(\phi)$ and the likelihood $p(D|\phi)$ of the data $D$ given $\phi$:
+The \gls{PPD} for a test sample $x_{test}$ specifies the distribution of its label $p(\cdot|x_{test},D_{train})$, which is conditioned on the set of training samples $D_{train} := \{(x_1,y_1), \dots, (x_n,y_n)\}$.
+The \gls{PPD} can be obtained by integration over the space of hypotheses $\Phi$, where the weight of a hypothesis $\phi\in\Phi$ is determined by its prior probability $p(\phi)$ and the likelihood $p(D|\phi)$ of the data $D$ given $\phi$:
 \begin{equation}
     p(y|x,D) \propto \int_{\Phi} p(y|x,\phi) p(D|\phi) p(\phi) d\phi.
     \label{eq:ppd}
@@ -250,9 +250,9 @@ The PPD can be obtained by integration over the space of hypotheses $\Phi$, wher
 
 
 \textbf{Synthetic Prior-fitting}\\
-Prior-fitting is a technique to approximate the PPD by fitting a parametric model to the posterior distribution of the hypothesis space.
+Prior-fitting is a technique to approximate the \gls{PPD} by fitting a parametric model to the posterior distribution of the hypothesis space.
 In \citetitle{tabpfn}, it is implemented with a prior specified by sampling scheme of the form $p(D)=E_{\phi \sim p(\phi)}[p(D|\phi)]$, which start by sampling hypotheses with $\phi \sim p(\phi)$ and then synthesis data with the hypothesis $D \sim p(D|\phi)$.
-Such synthesis datasets $D := (x_i, y_i)_{i \in \{1, \dots, n\}}$ are repeatedly resampled while parameters $\theta$ of PFN are optimized to predict $D_{test} \subset D$ | $D_{train} := D \setminus D_{test}$.
+Such synthesis datasets $D := (x_i, y_i)_{i \in \{1, \dots, n\}}$ are repeatedly resampled while parameters $\theta$ of \gls{PFN} are optimized to predict $D_{test} \subset D$ | $D_{train} := D \setminus D_{test}$.
 The loss function is defined as the negative log-likelihood of the test data:
 
 \begin{equation}
@@ -273,28 +273,28 @@ The loss function is defined as the negative log-likelihood of the test data:
         \caption{Architecture and attention mechanism}
         \label{fig:transformer_visualization}
     \end{subfigure}
-    \caption{Left (a): The PFN learns to approximate the PPD of a given prior in the offline stage to yield predictions on a new dataset in a single forward pass in the online stage. Right (b): Training samples $\{(x_1,y_1), \dots, (x_3,y_3)\}$ are transformed to $3$ tokens, which attend to each other; test samples $x_4$ and $x_5$ attend only to the training samples. By \citeauthor{tabpfn}}
+    \caption{Left (a): The \gls{PFN} learns to approximate the \gls{PPD} of a given prior in the offline stage to yield predictions on a new dataset in a single forward pass in the online stage. Right (b): Training samples $\{(x_1,y_1), \dots, (x_3,y_3)\}$ are transformed to $3$ tokens, which attend to each other; test samples $x_4$ and $x_5$ attend only to the training samples. By \citeauthor{tabpfn}}
     \label{fig:pfn_overview}
 \end{figure}
 
 The backend of TabPFN can be condensed in the image \ref{fig:pfn_overview}.
 Where the trained model is applied to unseen real-world datasets.
-For a novel dataset with training samples $D_{train}$ and test features $x_{test}$, feeding $\langle{}D_{train},x_{test}\rangle$ as an input to the model trained above yields the PPD $q_{\theta}(y|x_{test},D_{train})$ in a single forward-pass.
-The PPD class probabilities are then used as predictions for our real-world task.
+For a novel dataset with training samples $D_{train}$ and test features $x_{test}$, feeding $\langle{}D_{train},x_{test}\rangle$ as an input to the model trained above yields the \gls{PPD} $q_{\theta}(y|x_{test},D_{train})$ in a single forward-pass.
+The \gls{PPD} class probabilities are then used as predictions for our real-world task.
 Thus, PFNs perform training and prediction in one step (similar to prediction with Gaussian Processes) and do not use gradient-based learning on data seen at inference time.
 This is in contrast to traditional neural networks, which require multiple forward and backward passes for training and prediction.
 
 
 \section{Literature Conclusions}
 
-In summary, this chapter has provided an overview of the existing literature on predicting Acute Kidney Injury (AKI) in patients with Diabetic Ketoacidosis (DKA) admitted to the Intensive Care Unit (ICU). The review covered the scope of research, key related works, and the potential of advanced predictive models like Extreme Gradient Boosting (XGBoost) and TabPFN in addressing this critical healthcare challenge.
+In summary, this chapter has provided an overview of the existing literature on predicting \gls{AKI} in patients with \gls{DKA} admitted to the \gls{ICU}. The review covered the scope of research, key related works, and the potential of advanced predictive models like Extreme Gradient Boosting (XGBoost) and TabPFN in addressing this critical healthcare challenge.
 
-The scope of the research is confined to utilizing data from the MIMIC-IV database and adhering to the KDIGO guidelines for AKI definition. This focus ensures the relevance and accuracy of the predictive models being developed. While KDIGO guidelines offer a standardized framework for AKI detection, the necessity for early prediction before severe consequences occur underscores the importance of developing more precise and timely models.
+The scope of the research is confined to utilizing data from the \gls{MIMIC-IV} database and adhering to the KDIGO guidelines for \gls{AKI} definition. This focus ensures the relevance and accuracy of the predictive models being developed. While KDIGO guidelines offer a standardized framework for \gls{AKI} detection, the necessity for early prediction before severe consequences occur underscores the importance of developing more precise and timely models.
 
-Related studies have highlighted the progression in predictive model accuracy and methodology. For instance, \citeauthor{monogram-aki-dka}'s study using nomograms and the XGBoost model proposed by \citeauthor{xgboost-aki-dka} have provided valuable insights and promising results, albeit with limitations that this thesis aims to address. The use of the latest MIMIC-IV database and a more refined approach to feature selection and temporal changes in patient indicators are among the enhancements proposed.
+Related studies have highlighted the progression in predictive model accuracy and methodology. For instance, \citeauthor{monogram-aki-dka}'s study using nomograms and the XGBoost model proposed by \citeauthor{xgboost-aki-dka} have provided valuable insights and promising results, albeit with limitations that this thesis aims to address. The use of the latest \gls{MIMIC-IV} database and a more refined approach to feature selection and temporal changes in patient indicators are among the enhancements proposed.
 
 The chapter also delved into the theoretical foundations and practical implications of advanced predictive models. XGBoost, with its high performance and efficiency, and TabPFN, with its innovative approach to approximating Posterior Predictive Distributions, represent the cutting-edge techniques in this field. These models not only improve predictive accuracy but also offer robustness in handling complex, real-world medical datasets, including those with missing values.
 
-By building on these foundations and addressing the identified gaps, this thesis aims to contribute to the development of more effective and reliable predictive models for AKI in DKA patients. The next chapter will delve into the methodology employed in this research, detailing the data preparation, feature engineering, model training, and evaluation processes that underpin the proposed predictive framework.
+By building on these foundations and addressing the identified gaps, this thesis aims to contribute to the development of more effective and reliable predictive models for \gls{AKI} in \gls{DKA} patients. The next chapter will delve into the methodology employed in this research, detailing the data preparation, feature engineering, model training, and evaluation processes that underpin the proposed predictive framework.
 
 \end{document}
