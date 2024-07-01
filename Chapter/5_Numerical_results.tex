@@ -11,8 +11,6 @@ We also analyze the results to understand the behavior of the proposed models.
 
 \section{Evaluation Parameters}
 
-% Sinh viên trình bày cụ thể về các tham số dùng trong đánh giá
-
 In this section we present the evaluation parameters used in the experiments.
 Models are evaluated based on the following metrics:
 AUC-ROC, Precision, Recall, and Accuracy.
@@ -129,6 +127,9 @@ This visual aid can highlight whether certain classes are being consistently mis
 
 In this section, I will describe the specific steps taken to implement the simulations for the tabular-based models and the time series-based model to predict the risk of Acute Kidney Injury (AKI) in Diabetic Ketoacidosis (DKA) patients.
 The aim is to detail the process to generate the numerical results.
+The machine used in this thesis to run the experiments run on Ubuntu 22.04 with 32GB of RAM, an Intel Core i7-14700K CPU, and an NVIDIA GeForce RTX 4060 GPU. 
+The experiments were conducted using Python version 3.8.10 and TensorFlow version 2.7.0. 
+Other liberaries are specified in file requirements.txt in provided source code.
 
 For the tabular-based models, the dataset was split into five roughly equal parts to ensure a balanced representation of patients.
 Each iteration involved training the model on four parts and evaluating on the remaining part.
