@@ -3,20 +3,55 @@
 
 \section{Summary}
 
-% Sinh viên nhắc lại các vấn đề mà đồ án đã giải quyết được, cũng như những vấn đề còn tồn đọng của đồ án.  
+This thesis explores the capability of deep learning models in predicting \gls{AKI} in patients with \gls{DKA}.
+DKA is a serious complication of diabetes that can lead to AKI, a sudden decline in kidney function.
+AKI, a severe complication that affects about 40\% of \gls{DKA} patients, can significantly increase morbidity and mortality.
+Early detection of AKI is essential for improving patient outcomes and reducing mortality rates.
+However, current prediction models utilizing static data from the MIMIC-IV database have limitations.
 
-This thesis explores the application of deep learning models in predicting \gls{AKI} in patients with \gls{DKA}.
-AKI, a severe complication that affects about 40\% of \gls{DKA} patients, can significantly increase morbidity and mortality. 
-Early prediction of \gls{AKI} is crucial for timely intervention and improving patient outcomes.
+This thesis addresses these limitations by proposing a novel approach to predict AKI in DKA-ICU patients.
+The primary goal is to develop a model that leverages data from the MIMIC-IV database to achieve more accurate predictions.
+MIMIC-IV is a rich repository of de-identified health records, making it a valuable resource for studying AKI and other critical conditions.
+However, existing studies only focus on machine learning models and static data, which may not capture the dynamic nature of patient health metrics.
+Additionally, current models may include features that cause data leakage, essentially giving the model information about the outcome it's trying to predict.
+This thesis proposes removing such features to ensure the model's predictions are based solely on relevant clinical and biological data.
 
-The study focuses on developing and comparing multiple deep learning models, including tabular-based and time series-based approaches, to predict the risk of \gls{AKI} within the first 7 days of \gls{ICU} admission for \gls{DKA} patients. 
+Additionally, the thesis explores the impact of using different methods for calculating various patient indicators.
+Some indicators may have multiple measurements recorded over time.
+Analyzing how these calculations are done and their influence on the model's performance is crucial for optimizing its effectiveness.
+
+A significant contribution of this thesis lies in the development and evaluation of a deep learning model that utilizes time-series data.
+Deep learning algorithms are particularly adept at identifying complex patterns in data, making them well-suited for analyzing the dynamic nature of patient health metrics.
+By incorporating time-series data and leveraging the power of deep learning, this model has the potential to outperform existing prediction models in terms of accuracy and reliability.
+
+The study focuses on developing and comparing multiple deep learning models, including tabular-based and time series-based approaches, to predict the risk of \gls{AKI} within the first 7 days of \gls{ICU} admission for \gls{DKA} patients.
 The models were trained using various features collected 24 hours prior to \gls{ICU} admission, such as demographics, vital signs, comorbidities, testing results, interventions, prognosis, and scoring systems.
+Patient's data were extracted from the \gls{MIMIC-IV} database, a publicly available dataset of critical care patients via SQL queries.
+They were then preprocessed and transformed into a more robust format where each patient's data was represented as an object.
 
-Key findings of this research highlight the effectiveness of deep learning models over traditional machine learning methods, particularly in handling the temporal changes in patients' indicators. 
-The proposed models demonstrated superior performance, offering a valuable tool for early detection of \gls{AKI} and aiding healthcare professionals in making informed decisions for patient care.
+The Patient object contains collected features, which are either static data which do not change over the course of ICU stay or time series data stored as a map of charted time and the corresponding value.
+The object has multiple methods supporting the analysis of the patient's data, such as counting amount of existing features, extract features during a time window.
+These information were then used to train the deep learning models, including \gls{LSTM}, TabPFN, and GRANDE.
+Finally, the models were evaluated based on their performance metrics, including accuracy, sensitivity, specificity, and \gls{AUC}.
 
-This work contributes to the field of medical technology by leveraging the power of artificial intelligence to address critical healthcare challenges.
-With such high accuracy and reliability, the developed models can be integrated into clinical practice to enhance patient care and reduce the burden on healthcare systems.
+
+\section{Remarkable contributions}
+
+The study has several notable contributions to the field of AKI prediction in DKA patients. 
+Firstly, the study proposes a novel approach to predict AKI in DKA patients using deep learning models.
+The models leverage time-series data to capture the dynamic nature of patient health metrics, shredding light on the potential of deep learning in improving AKI prediction accuracy.
+
+Secondly, the study introduces a new method for calculating patient indicators, which may have multiple measurements recorded over time.
+By analyzing the impact of different calculation methods on the model's performance, the study provides valuable insights into optimizing the model's effectiveness.
+It is found that using the latest value of an indicator at the time of prediction yields the best results, highlighting the importance of selecting the appropriate calculation method.
+
+Thirdly, the study removes features that may cause data leakage while adding new features supporting the prediction of AKI in DKA patients. 
+Furthermore, the study also identified and deleted the polluted data measured after the development of AKI, which may lead to data leakage.
+Overall models' AUC scores improved for about 2\%.
+
+Lastly, the study develops and evaluates multiple deep learning models, including tabular-based and time series-based approaches, to predict the risk of AKI in DKA patients.
+The models are trained using various features collected 24 hours prior to ICU admission, providing a comprehensive analysis of the patient's condition and risk factors.
+Final result shows that the TabPFN model outperforms the other models in terms of accuracy, sensitivity, specificity, and AUC, demonstrating its potential for improving AKI prediction in DKA patients.
 
 
 \section{Suggestion for Future Works }
