@@ -8,6 +8,7 @@
 *.log
 *.synctex.gz
 *.pdf
+*.synctex(busy)
 
 # bib tex 
 *-blx.bib
