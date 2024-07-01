@@ -428,10 +428,11 @@ Unlike traditional tree-based models that may struggle with the diverse challeng
 One interesting note about GRANDE is that it requires validate data so in this case, the two no-validate methods are not used.
 
 
-Aside from gradient-based models, TabPFN is a deep learning model that uses a Bayesian approach to clear the relations between features and the target variable.
+Aside from gradient-based models, TabPFN is a deep learning model that employs a Bayesian approach to clear the relations between features and the target variable.
+
 The result of relationships founded can be seen in Figure \ref{fig:tabpfn-feature-relation}.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \begin{subfigure}{0.45\textwidth}
         \centering
@@ -468,7 +469,17 @@ The result of relationships founded can be seen in Figure \ref{fig:tabpfn-featur
 \end{figure}
 
 
-\section{Time series-based model}
+The model learning curve over 100 epochs and early stopping of 10 epochs can be seen in Figure \ref{fig:tabpfn-learning-curve}.
+The loss result decreased shapely for both training and validation set during first 10 epochs then the loss of validation set suddenly  stabilizes while the loss of training set continued to decrease.
+Despite having no great improvement since the 10th epoch, the model still learned the data well for another 50 epochs before overfitting.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./Figure/tabpfn-loss-graph.png}
+    \caption{TabPFN learning curve}
+    \label{fig:tabpfn-learning-curve}
+\end{figure}
+
+\subsection{Time series-based model}
 
 In this section, I will describe the time series-based model used to predict the risk of Acute Kidney Injury in Diabetic Ketoacidosis patients.
 The model is built using Tensorflow and Keras, it used a Long Short-Term Memory (LSTM) network to learn the temporal dependencies of time dependent features.
